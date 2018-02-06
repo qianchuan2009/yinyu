@@ -1,0 +1,94 @@
+<resources>
+
+    <!--&lt;!&ndash; Base application theme. &ndash;&gt;-->
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+        <!--&lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+    <!--</style>-->
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/nav_bar</item>
+        <item name="colorPrimaryDark">@color/balck</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!--欢迎页面主题-->
+    <style name="AppTheme.NoActionBar.FullScreen">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <!-- 标题栏Relative样式 -->
+<style name="rl_titlebar">
+<item name="android:layout_width">match_parent</item>
+<item name="android:layout_height">46dip</item>
+<item name="android:background">@color/nav_bar</item>
+</style>
+
+    <!-- 标题栏上的测试版标记textview -->
+<style name="txt_test_flag">
+<item name="android:layout_width">100dp</item>
+<item name="android:layout_height">wrap_content</item>
+<item name="android:layout_alignParentLeft">true</item>
+<item name="android:background">#00000000</item>
+<item name="android:layout_centerVertical">true</item>
+<item name="android:layout_marginLeft">20dip</item>
+<item name="android:textColor">#FF6347</item>
+<item name="android:textSize">14sp</item>
+</style>
+
+    <!-- 标题栏文字TextView -->
+<style name="txt_titlebar">
+<item name="android:layout_width">wrap_content</item>
+<item name="android:layout_height">wrap_content</item>
+<item name="android:layout_centerInParent">true</item>
+<item name="android:background">#00000000</item>
+<item name="android:gravity">center</item>
+<item name="android:textColor">#ffffff</item>
+<item name="android:textSize">20sp</item>
+<item name="android:singleLine">true</item>
+<item name="android:ellipsize">end</item>
+<item name="android:paddingLeft">80dp</item>
+<item name="android:paddingRight">80dp</item>
+</style>
+
+    <!-- 标题栏上的返回按钮 ImageButton -->
+<style name="btn_back_titlebar">
+<item name="android:layout_width">45dip</item>
+<item name="android:layout_height">45dip</item>
+<item name="android:layout_alignParentLeft">true</item>
+<item name="android:background">#00000000</item>
+<item name="android:onClick">backHandler</item>
+<item name="android:src">@mipmap/back_arrow</item>
+<item name="android:layout_centerVertical">true</item>
+<item name="android:layout_marginLeft">0dip</item>
+</style>
+
+    <!--用户名密码的输入框-->
+    <style name="username_edit_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">#eba139</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+
+
+    <!--<style name="anim_activity" mce_bogus="1" parent="@android:style/Animation.Activity">-->
+        <!--<item name="android:activityOpenEnterAnimation">@anim/activity_open_in_anim</item>-->
+        <!--<item name="android:activityOpenExitAnimation">@anim/activity_open_out_anim</item>-->
+        <!--<item name="android:activityCloseExitAnimation">@anim/activity_close_out_anim</item>-->
+        <!--<item name="android:activityCloseEnterAnimation">@anim/activity_close_in_anim</item>-->
+    <!--</style>-->
+
+</resources>

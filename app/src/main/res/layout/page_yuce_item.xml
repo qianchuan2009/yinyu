@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_bbsitem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff">
+
+    <ImageView
+        android:id="@+id/bbs_icon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/blank_already_done"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:id="@+id/bbs_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/bbs_icon"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/bbs_icon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="#333333"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/bbs_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bbs_title"
+        android:layout_alignLeft="@+id/bbs_title"
+        android:layout_marginTop="1dp"
+        android:layout_toRightOf="@+id/bbs_icon"
+        android:ellipsize="end"
+        android:lines="2"
+        android:paddingBottom="1dp"
+        android:textColor="#939393"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/bbs_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/bbs_desc"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:ellipsize="end"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="#939393"
+        android:visibility="gone"
+        android:textSize="11sp" />
+
+</RelativeLayout>

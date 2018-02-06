@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/divider_line"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/viewpager1"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <com.lzy.widget.loop.LoopViewPager
+            android:id="@+id/pagerHeader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lvp_delayTime="3000"
+            app:lvp_isAutoLoop="true"/>
+
+        <com.lzy.widget.tab.CircleIndicator
+            android:id="@+id/ci"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:background="#4000"
+            app:ci_normalRadiusColor="#FFF"
+            app:ci_selectedRadiusColor="#FFF"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_below="@id/viewpager1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <GridView
+            android:id="@+id/gridView"
+            android:layout_marginTop="10dp"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:horizontalSpacing="3dp"
+            android:numColumns="4"
+            android:verticalSpacing="3dp"/>
+    </RelativeLayout>
+</RelativeLayout>
