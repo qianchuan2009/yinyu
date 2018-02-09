@@ -44,7 +44,7 @@ public class LoginActivity extends Activity {
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url=ConstFile.serverUrl+"/index2.php?username="+name.trim()+"&password="+pw.trim();
+                    String url=ConstFile.serverUrl+"index2.php?username="+name.trim()+"&password="+pw.trim();
                     String response = example.run(url);
                     JSONObject jObj = new JSONObject(response);
                     String type = jObj.getString("code");

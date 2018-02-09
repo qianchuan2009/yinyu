@@ -49,9 +49,9 @@ public class MsgFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_msg, container, false);
         context = this.getActivity();
-        getActivity().findViewById(R.id.layout_title).setVisibility(View.VISIBLE);
-        TextView titleView = (TextView) getActivity().findViewById(R.id.titlebar);
-        titleView.setText("资讯");
+//        getActivity().findViewById(R.id.layout_title).setVisibility(View.VISIBLE);
+//        TextView titleView = (TextView) getActivity().findViewById(R.id.titlebar);
+//        titleView.setText("资讯");
         initView(view);
         initData();
         return view;
