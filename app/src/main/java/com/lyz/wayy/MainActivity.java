@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lyz.wayy.bean.Friend;
+import com.lyz.wayy.bean.FriendInfo;
 import com.lyz.wayy.main.frame.Fragment2;
 import com.lyz.wayy.main.frame.FragmentFriend;
 
@@ -84,10 +85,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private RadioGroup radioGroup;//下方tab页
     private RadioButton radioButton1;//tab页第一个按钮
     private RadioButton radioButton2;//tab页第二个按钮
-    private TextView textView;//第一个进度条上面的文字
     private RelativeLayout onBottom;//下方tab页整体布局
     private static boolean isShow = false;//是否显示下方tab页
-    private LinearLayout picOut;//可以移动的图片的外部布局
+    private RelativeLayout picOut;//可以移动的图片的外部布局
     private ImageView moveImg;//可以移动的图片
     private FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -211,18 +211,68 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 case CHANGE_NAME://下方点击改变右边名字
                     Bundle bundle = msg.getData();
                     Friend frd = (Friend) bundle.getSerializable("friend");
-                    setFrdInfo(frd);
+                    getFrdInfo( frd);
                     break;
                 default:
             }
         }
     };
 
+    private void getFrdInfo(final Friend frd){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=user&act=run&flag=1&web_uid=" + ConstFile.uId+"&ownerId="+frd.getUserId();
+                    String response = example.run(url);
+                    final FriendInfo friend= FriendInfo.objectFromData(response);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setFrdInfo(friend,frd);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     //设置朋友信息
-    private void setFrdInfo(Friend frd) {
+    private void setFrdInfo(FriendInfo friendInfo,Friend frd) {
         frdArea.setVisibility(View.VISIBLE);
+        Boolean isVip = friendInfo.getYellowstatus() == 1;
+        if (isVip) {
+            frdName.setTextColor(Color.RED);
+        } else {
+            frdName.setTextColor(Color.BLACK);
+        }
         frdName.setText(frd.getUserName());
         Glide.with(context).load(frd.getHeadPic()).into(frdImg);
+
+        int level = CharmUtil.expToGrade4Man(frd.getExp());
+//        frdLevel.setText(level+"");
+        int loc2=CharmUtil.gradeToExp4Man(level);
+        int loc1=CharmUtil.gradeToExp4Man(level + 1);
+        int _nextExp = frd.getExp() - loc2;
+        float per=(float) _nextExp / (loc1 - loc2);
+        int percent = (int)(per* 100);
+        int levelExp = loc1 - loc2;
+        frdProgress.setProgress(percent);
+        frdProgressPer.setText(_nextExp+"/"+levelExp);
+
+
+        int dogLevel=CharmUtil.toLevel(frd.getCharm());
+//        frdDogLevel.setText(dogLevel+"");
+        int dogCur=CharmUtil.currentLevelValue(frd.getCharm());
+        int dogNext=CharmUtil.needLevelValue(frd.getCharm());
+        int has=frd.getCharm()-dogCur;
+        float p=has/(dogNext-dogCur);
+        frdDogProgress.setProgress((int)(p*100));
+        frdDogProgressPer.setText(has+"/"+dogNext);
     }
 
     RadioGroup.OnCheckedChangeListener checkedchangelistner = new RadioGroup.OnCheckedChangeListener() {
@@ -244,8 +294,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private void change1() {
         radioButton1.setPressed(true);
         radioButton1.setChecked(true);
-        radioButton1.setBackgroundResource(R.drawable.main_select_button);
-        radioButton2.setBackgroundResource(R.drawable.button_back3);
+        radioButton1.setBackgroundResource(R.drawable.icon_list);
+        radioButton2.setBackgroundResource(R.drawable.i_tool_p);
         FragmentTransaction ft = fragmentManager.beginTransaction();
         FragmentFriend fragmentFrd = new FragmentFriend();
         fragmentFrd.setContext(this);
@@ -257,8 +307,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private void change2() {
         radioButton2.setPressed(true);
         radioButton2.setChecked(true);
-        radioButton1.setBackgroundResource(R.drawable.button_back3);
-        radioButton2.setBackgroundResource(R.drawable.button_back2);
+        radioButton1.setBackgroundResource(R.drawable.icon_list_p);
+        radioButton2.setBackgroundResource(R.drawable.i_tool);
         FragmentTransaction ft = fragmentManager.beginTransaction();
         Fragment2 fragment2 = new Fragment2();
         fragment2.setHandle(handler);
@@ -272,10 +322,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         imageView = (ImageView) findViewById(R.id.show);
         onBottom = (RelativeLayout) findViewById(R.id.bottom);
         radioGroup = (RadioGroup) findViewById(R.id.radio_group);
+        radioGroup.bringToFront();
         radioButton1 = (RadioButton) findViewById(R.id.tab1);
         radioButton2 = (RadioButton) findViewById(R.id.tab2);
-        textView = (TextView) findViewById(R.id.text3);
-        picOut = (LinearLayout) findViewById(R.id.l8);
+        picOut = (RelativeLayout) findViewById(R.id.move_area);
         radioGroup.setOnCheckedChangeListener(checkedchangelistner);
         moveImg = (ImageView) findViewById(R.id.move_img);
         moveImg.setOnTouchListener(this);
