@@ -30,7 +30,7 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acticity_login);
         ButterKnife.bind(this);
-
+        login();
     }
 
 

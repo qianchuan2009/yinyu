@@ -56,7 +56,7 @@
         android:layout_alignStart="@+id/activity_login_pw_rl"
         android:layout_below="@+id/activity_login_pw_rl"
         android:layout_marginTop="16dp"
-        android:background="@drawable/background_button"
+        android:background="@drawable/login_button"
         android:textColor="#2e7bb3"
         android:textSize="18sp" />
 </RelativeLayout>
