@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.TypedValue;
@@ -193,6 +194,44 @@ public class Utils {
             e.printStackTrace();
         }
     }
+    /**
+     * 获取背包的宠物图片
+     */
+    private void loadAmimalAnim(int dogId,int jieduan) {
+
+
+//        AnimationDrawable animationDrawable = new AnimationDrawable();
+        SilkyAnimation mAnimation=
+                new SilkyAnimation.Builder(mSurfaceView)
+                        .build();
+        String jieDuanStr="Animal"+dogId+"_0"+jieduan;
+//        String url="file:///android_asset/Animal/Animal"+dogId+"/"+jieDuanStr;
+        String assetsPath="Animal/Animal"+dogId+"/"+jieDuanStr";
+
+        mAnimation.start(assetsPath);
+    }
+
+
+//    /**
+//     * 通过代码添加帧动画方法
+//     */
+//    private void setSrc2FrameAnim(int dogId,int jieduan) {
+//
+//
+//        AnimationDrawable animationDrawable = new AnimationDrawable();
+//        String jieDuanStr="Animal"+dogId+"_0"+jieduan;
+//        String url="file:///android_asset/Animal/Animal"+dogId+"/"+jieDuanStr;
+//        // 为AnimationDrawable添加动画帧
+//        animationDrawable.addFrame(
+//                getResources().getDrawable(R.drawable.img00), 50);
+//        animationDrawable.addFrame(
+//                getResources().getDrawable(R.drawable.img01), 50);
+//        animationDrawable.addFrame(
+//                getResources().getDrawable(R.drawable.img02), 50);
+//        // 设置为循环播放
+//        animationDrawable.setOneShot(false);
+//        imageView.setBackground(animationDrawable);
+//    }
 
 
 

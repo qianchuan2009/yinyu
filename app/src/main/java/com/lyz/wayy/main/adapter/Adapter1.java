@@ -48,7 +48,7 @@ public class Adapter1 extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final ViewHolder viewHolder=new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter1,parent,false));
+        final ViewHolder viewHolder=new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.pkgItem,parent,false));
         return viewHolder;
     }
 
@@ -79,7 +79,7 @@ public class Adapter1 extends RecyclerView.Adapter {
 //        if(convertView==null){
 //            viewHolder = new ViewHolder();
 //            // 获得容器
-//            convertView = LayoutInflater.from(this.context).inflate(R.layout.adapter1,null);
+//            convertView = LayoutInflater.from(this.context).inflate(R.layout.pkgItem,null);
 //
 //            // 初始化组件
 //            viewHolder.image = (ImageView) convertView.findViewById(R.id.adapter1_img);

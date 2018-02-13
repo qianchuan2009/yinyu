@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.bean.FriendInfo;
-import com.lyz.wayy.main.frame.Fragment2;
+import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.main.frame.FragmentFriend;
 
 import org.json.JSONObject;
@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         radioButton1.setBackgroundResource(R.drawable.icon_list_p);
         radioButton2.setBackgroundResource(R.drawable.i_tool);
         FragmentTransaction ft = fragmentManager.beginTransaction();
-        Fragment2 fragment2 = new Fragment2();
+        FragmentPkg fragment2 = new FragmentPkg();
         fragment2.setHandle(handler);
         fragment2.setContext(this);
         ft.replace(R.id.frame, fragment2);

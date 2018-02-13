@@ -1,6 +1,7 @@
 package com.lyz.wayy.main.adapter;
 
 
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import com.bumptech.glide.Glide;
 import com.lyz.wayy.R;
 import com.lyz.wayy.bean.Friend;
-import com.lyz.wayy.bean.PkgInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +24,11 @@ import java.util.List;
  * Created by chenxx on 2018/2/7.
  */
 
-public class AdapterFriend extends RecyclerView.Adapter {
+public class AdapterPkg extends RecyclerView.Adapter {
 
-    List<PkgInfo> list=new ArrayList<>();//图片的人名
+    List<Friend> list=new ArrayList<>();//图片的人名
     Context context;
-    public AdapterFriend(List<PkgInfo> _list, Context ct){
+    public AdapterPkg(List<Friend> _list,Context ct){
         this.list=_list;
         this.context=ct;
     }
@@ -36,8 +37,8 @@ public class AdapterFriend extends RecyclerView.Adapter {
         list=_list;
     }
 
-    private OnMyItemClickListener listener;
-    public void setOnMyItemClickListener(OnMyItemClickListener listener){
+    private AdapterFriend.OnMyItemClickListener listener;
+    public void setOnMyItemClickListener(AdapterFriend.OnMyItemClickListener listener){
         this.listener = listener;
 
     }
@@ -57,9 +58,9 @@ public class AdapterFriend extends RecyclerView.Adapter {
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final PkgInfo frd=list.get(position);
-        ViewHolder viewHolder=(ViewHolder)holder;
-        viewHolder.textView.setText(frd.getDogName());
+        final Friend frd=list.get(position);
+        AdapterPkg.ViewHolder viewHolder=(AdapterPkg.ViewHolder)holder;
+        viewHolder.textView.setText(frd.getUserName());
         Glide.with(context).load(frd.getHeadPic()).into(viewHolder.imageView);
         final int num=position;
         final TextView textViewTemp=viewHolder.textView;
@@ -86,8 +87,7 @@ public class AdapterFriend extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final ViewHolder viewHolder=new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter2,parent,false));
+        final AdapterPkg.ViewHolder viewHolder=new AdapterPkg.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter2,parent,false));
         return viewHolder;
     }
-
 }
