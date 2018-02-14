@@ -25,9 +25,9 @@ import java.util.List;
 
 public class AdapterFriend extends RecyclerView.Adapter {
 
-    List<PkgInfo> list=new ArrayList<>();//图片的人名
+    List<Friend> list=new ArrayList<>();//图片的人名
     Context context;
-    public AdapterFriend(List<PkgInfo> _list, Context ct){
+    public AdapterFriend(List<Friend> _list, Context ct){
         this.list=_list;
         this.context=ct;
     }
@@ -57,9 +57,9 @@ public class AdapterFriend extends RecyclerView.Adapter {
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final PkgInfo frd=list.get(position);
+        final Friend frd=list.get(position);
         ViewHolder viewHolder=(ViewHolder)holder;
-        viewHolder.textView.setText(frd.getDogName());
+        viewHolder.textView.setText(frd.getUserName());
         Glide.with(context).load(frd.getHeadPic()).into(viewHolder.imageView);
         final int num=position;
         final TextView textViewTemp=viewHolder.textView;

@@ -4,10 +4,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.TypedValue;
+import android.view.SurfaceView;
+
 
 import java.io.IOException;
 import java.util.Random;
@@ -197,16 +198,18 @@ public class Utils {
     /**
      * 获取背包的宠物图片
      */
-    private void loadAmimalAnim(int dogId,int jieduan) {
+    public static void loadAmimalAnim(int dogId, int jieduan, SurfaceView mSurfaceView) {
 
 
 //        AnimationDrawable animationDrawable = new AnimationDrawable();
         SilkyAnimation mAnimation=
                 new SilkyAnimation.Builder(mSurfaceView)
+                        //设置循环模式, 默认不循环
+                        .setRepeatMode(SilkyAnimation.MODE_INFINITE)
                         .build();
         String jieDuanStr="Animal"+dogId+"_0"+jieduan;
 //        String url="file:///android_asset/Animal/Animal"+dogId+"/"+jieDuanStr;
-        String assetsPath="Animal/Animal"+dogId+"/"+jieDuanStr";
+        String assetsPath="Animal/Animal"+dogId+"/"+jieDuanStr;
 
         mAnimation.start(assetsPath);
     }

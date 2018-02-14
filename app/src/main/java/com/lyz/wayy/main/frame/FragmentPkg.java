@@ -16,9 +16,8 @@ import com.lyz.wayy.ConstFile;
 import com.lyz.wayy.MainActivity;
 import com.lyz.wayy.R;
 import com.lyz.wayy.Utils;
-import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.bean.PkgInfo;
-import com.lyz.wayy.main.adapter.AdapterFriend;
+import com.lyz.wayy.main.adapter.AdapterPkg;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class FragmentPkg extends Fragment {
 
     //    private GridView gridView;
     Context context;
-    private AdapterFriend adapterPkg; //recyclerView的适配器
+    private AdapterPkg adapterPkg; //recyclerView的适配器
     private RecyclerView recyclerView; //显示图片的布局
     private Handler handler;//传过来的handler
     List<PkgInfo> dataList=new ArrayList<>();
@@ -46,7 +45,7 @@ public class FragmentPkg extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragmentpkg,container,false);
-        recyclerView=(RecyclerView)view.findViewById(R.id.recycler2);
+        recyclerView=(RecyclerView)view.findViewById(R.id.recycler_pkg);
 //        if(getContext()!=null){
 //            LinearLayoutManager ms= new LinearLayoutManager(getContext());
 //            ms.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -55,17 +54,17 @@ public class FragmentPkg extends Fragment {
         LinearLayoutManager ms= new LinearLayoutManager(context);
         ms.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(ms);
-        getFriend();
-        adapterPkg=new AdapterFriend(dataList,context);
-        adapterPkg.setOnMyItemClickListener(new AdapterFriend.OnMyItemClickListener() {
+        getPkg();
+        adapterPkg=new AdapterPkg(dataList,context);
+        adapterPkg.setOnMyItemClickListener(new AdapterPkg.OnMyItemClickListener() {
             @Override
-            public void myClick( Friend frd , int pos) {
+            public void myClick( PkgInfo pkgInfo , int pos) {
 //                String str=textView.getText().toString();
                 Message message=new Message();
-                message.what= MainActivity.CHANGE_NAME;
+                message.what= MainActivity.CHANGE_PKG;
                 Bundle bundle=new Bundle();
 //                bundle.putString("name",str);
-                bundle.putSerializable("pkg",frd);
+                bundle.putSerializable("pkg",pkgInfo);
                 message.setData(bundle);
                 handler.sendMessage(message);
             }
@@ -75,14 +74,14 @@ public class FragmentPkg extends Fragment {
     }
 
     //朋友
-    private void getFriend(){
+    private void getPkg(){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=package&act=getPackageInfo&web_uid=" +ConstFile.uId;
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=Package&act=getPackageInfo&web_uid=" +ConstFile.uId;
                     String response = example.run(url);
 //                    JSONArray arr=new JSONArray(response);
                     dataList= PkgInfo.arrayPkgInfoFromData(response,"4");

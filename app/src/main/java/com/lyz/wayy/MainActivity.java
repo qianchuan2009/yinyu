@@ -2,6 +2,9 @@ package com.lyz.wayy;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,8 +23,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.util.Util;
 import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.bean.FriendInfo;
+import com.lyz.wayy.bean.FrontDog;
+import com.lyz.wayy.bean.PkgInfo;
 import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.main.frame.FragmentFriend;
 
@@ -51,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     TextView gonggao;
 
     public static final int CHANGE_NAME = 1;
+    public static final int CHANGE_PKG = 2;
     public static Context context;
     @BindView(R.id.frd_img)
     ImageView frdImg;
@@ -165,6 +173,33 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         float p=has/(dogNext-dogCur);
         myDogProgress.setProgress((int)(p*100));
         myDogProgressPer.setText(has+"/"+dogNext);
+
+
+        //设置宠物
+
+        UserInfo.DogBean dog=UserInfo.DogBean.objectFromData(userJsonStr,"dog");
+        int DogId=dog.getDogId();
+        int step=dog.getStep();
+        setDog2Front(step,DogId);
+    }
+
+    //设置宠物到前台
+    private  void setDog2Front(int step,int DogId){
+        if (step<1){
+            if (step==-2){
+                moveImg.setImageResource(R.drawable.egg0);
+            }else if(step==-1){
+                moveImg.setImageResource(R.drawable.egg1);
+            }else{
+                moveImg.setImageResource(R.drawable.egg2);
+            }
+        }else{
+            int id = getResources().getIdentifier("animal"+DogId+"_0"+step, "drawable", getPackageName());
+//            Drawable drawable = getResources().getDrawable(id);
+            moveImg.setImageResource(id);
+            AnimationDrawable animationDrawable = (AnimationDrawable) moveImg.getDrawable();
+            animationDrawable.start();
+        }
     }
 
 
@@ -208,16 +243,54 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case CHANGE_NAME://下方点击改变右边名字
+                case CHANGE_NAME://朋友
                     Bundle bundle = msg.getData();
                     Friend frd = (Friend) bundle.getSerializable("friend");
                     getFrdInfo( frd);
                     break;
+                case CHANGE_PKG://背包
+                    Bundle bundle2=msg.getData();
+                    PkgInfo pkg= (PkgInfo) bundle2.getSerializable("pkg");
+                    getDogAndSet2Front(pkg);
+                    break;
                 default:
+                    break;
             }
         }
     };
 
+    //设置宠物到主台
+    private  void getDogAndSet2Front(final PkgInfo pkgInfo){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=dog&act=changeDog&id="+pkgInfo.getId()+"&web_uid=" + ConstFile.uId;
+                    String response = example.run(url);
+                    FrontDog dogs=FrontDog.objectFromData(response);
+                    if(1==dogs.getCode()){
+                        final FrontDog.UserDogBean dog=dogs.getUserDog();
+                        //                    FrontDog.UserDogBean dog=FrontDog.UserDogBean.objectFromData(response)
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setDog2Front(dog.getStep(),dog.getDogId());
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
+    }
+
+    //获取朋友信息
     private void getFrdInfo(final Friend frd){
         new Thread(new Runnable() {
             @Override
@@ -269,10 +342,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 //        frdDogLevel.setText(dogLevel+"");
         int dogCur=CharmUtil.currentLevelValue(frd.getCharm());
         int dogNext=CharmUtil.needLevelValue(frd.getCharm());
-        int has=frd.getCharm()-dogCur;
-        float p=has/(dogNext-dogCur);
+//        int has=frd.getCharm()-dogCur;
+//        float p=has/(dogNext-dogCur);
+        float p=(float) dogCur/dogNext;
+//        frdDogProgress.setProgress((int)(p*100));
         frdDogProgress.setProgress((int)(p*100));
-        frdDogProgressPer.setText(has+"/"+dogNext);
+        frdDogProgressPer.setText(dogCur+"/"+dogNext);
     }
 
     RadioGroup.OnCheckedChangeListener checkedchangelistner = new RadioGroup.OnCheckedChangeListener() {
@@ -328,6 +403,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         picOut = (RelativeLayout) findViewById(R.id.move_area);
         radioGroup.setOnCheckedChangeListener(checkedchangelistner);
         moveImg = (ImageView) findViewById(R.id.move_img);
+
         moveImg.setOnTouchListener(this);
         change1();
         imageView.setOnClickListener(new View.OnClickListener() {

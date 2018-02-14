@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.lyz.wayy.R;
-import com.lyz.wayy.bean.Friend;
+import com.lyz.wayy.bean.PkgInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,55 +26,50 @@ import java.util.List;
 
 public class AdapterPkg extends RecyclerView.Adapter {
 
-    List<Friend> list=new ArrayList<>();//图片的人名
+    List<PkgInfo> list=new ArrayList<>();//图片的人名
     Context context;
-    public AdapterPkg(List<Friend> _list,Context ct){
+    public AdapterPkg(List<PkgInfo> _list, Context ct){
         this.list=_list;
         this.context=ct;
     }
 
-    public  void reSetDatalist(List<Friend> _list){
+    public  void reSetDatalist(List<PkgInfo> _list){
         list=_list;
     }
 
-    private AdapterFriend.OnMyItemClickListener listener;
-    public void setOnMyItemClickListener(AdapterFriend.OnMyItemClickListener listener){
+    private AdapterPkg.OnMyItemClickListener listener;
+    public void setOnMyItemClickListener(AdapterPkg.OnMyItemClickListener listener){
         this.listener = listener;
 
     }
 
     public interface OnMyItemClickListener{
-        void myClick(Friend frd, int pos);
+        void myClick(PkgInfo frd, int pos);
     }
 
     private class ViewHolder extends  RecyclerView.ViewHolder{
         private ImageView imageView;
-        private TextView textView;
+//        private TextView textView;
         public ViewHolder(View view){
             super(view);
-            imageView=(ImageView)view.findViewById(R.id.adapter2_img);
-            textView=(TextView)view.findViewById(R.id.adapter2_txt);
+            imageView=(ImageView)view.findViewById(R.id.adapter_img);
+//            textView=(TextView)view.findViewById(R.id.adapter2_txt);
         }
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final Friend frd=list.get(position);
+        final PkgInfo pkg=list.get(position);
         AdapterPkg.ViewHolder viewHolder=(AdapterPkg.ViewHolder)holder;
-        viewHolder.textView.setText(frd.getUserName());
-        Glide.with(context).load(frd.getHeadPic()).into(viewHolder.imageView);
+        String jieDuanStr="Animal"+pkg.getDogId()+"_04";
+        String url="file:///android_asset/Animal/Animal"+pkg.getDogId()+"/"+jieDuanStr+"/"+"animal"+pkg.getDogId()+"_04_0001.png";
+//        viewHolder.textView.setText(frd.getDogName());
+        Glide.with(context).load(url).into(viewHolder.imageView);
         final int num=position;
-        final TextView textViewTemp=viewHolder.textView;
         if (listener!=null){
-            viewHolder.textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.myClick(frd,num);
-                }
-            });
             viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.myClick(frd,num);
+                    listener.myClick(pkg,num);
                 }
             });
         }
@@ -87,7 +82,7 @@ public class AdapterPkg extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final AdapterPkg.ViewHolder viewHolder=new AdapterPkg.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter2,parent,false));
+        final AdapterPkg.ViewHolder viewHolder=new AdapterPkg.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.pkg_item,parent,false));
         return viewHolder;
     }
 }
