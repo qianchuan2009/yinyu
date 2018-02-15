@@ -17,6 +17,7 @@ import java.util.List;
 public class FriendInfo {
 
     /**
+     * "virtualimage": "0-0-0-0-0-init-init-init-init-0-init-0-0-0-init-0-0-0-0-init-0-0-0-0-0-0",
      * money : 60753
      * exp : 242456
      * charm : 96
@@ -25,7 +26,7 @@ public class FriendInfo {
      * yellowstatus : 0
      * yellowlevel : 0
      */
-
+    private String virtualimage;
     private int money;
     private int exp;
     private int charm;
@@ -47,7 +48,13 @@ public class FriendInfo {
         return null;
     }
 
+    public  String getVirtualimage(){
+        return virtualimage;
+    }
 
+    public  void setVirtualimage(String vImg){
+        this.virtualimage=vImg;
+    }
 
     public int getMoney() {
         return money;

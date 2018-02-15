@@ -14,9 +14,11 @@ import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -226,7 +228,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     //设置宠物到前台
     private  void setDog2Front(int step,int DogId){
+        ViewGroup.LayoutParams params = moveImg.getLayoutParams(); // 获取对话框当前的参数值
         if (step<1){
+            params.width = Utils.dp2px(40,this);
+            params.height = Utils.dp2px(50,this);
+            moveImg.setLayoutParams(params);
             if (step==-2){
                 moveImg.setImageResource(R.drawable.egg0);
             }else if(step==-1){
@@ -235,6 +241,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 moveImg.setImageResource(R.drawable.egg2);
             }
         }else{
+
+            params.width = Utils.dp2px(100,this);
+            params.height = Utils.dp2px(100,this);
+            moveImg.setLayoutParams(params);
+
             int id = getResources().getIdentifier("animal"+DogId+"_0"+step, "drawable", getPackageName());
 //            Drawable drawable = getResources().getDrawable(id);
             moveImg.setImageResource(id);
@@ -363,7 +374,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     //设置朋友信息
     private void setFrdInfo(FriendInfo friendInfo,Friend frd) {
-        frdArea.setVisibility(View.VISIBLE);
+        if ((frd.getUserId()+"" ).equalsIgnoreCase(userBean.getUId())){
+            frdArea.setVisibility(View.GONE);
+        }else {
+            frdArea.setVisibility(View.VISIBLE);
+        }
+
         Boolean isVip = friendInfo.getYellowstatus() == 1;
         if (isVip) {
             frdName.setTextColor(Color.RED);
@@ -385,6 +401,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         frdProgressPer.setText(_nextExp+"/"+levelExp);
 
 
+
         int dogLevel=CharmUtil.toLevel(frd.getCharm());
 //        frdDogLevel.setText(dogLevel+"");
         int dogCur=CharmUtil.currentLevelValue(frd.getCharm());
@@ -395,6 +412,23 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 //        frdDogProgress.setProgress((int)(p*100));
         frdDogProgress.setProgress((int)(p*100));
         frdDogProgressPer.setText(dogCur+"/"+dogNext);
+
+        //设置宠物
+        FriendInfo.DogBean dog=friendInfo.getDog();
+        int DogId=dog.getDogId();
+        int step=dog.getStep();
+        setDog2Front(step,DogId);
+
+        //设置人物到前台
+        try{
+            String vImgStr=friendInfo.getVirtualimage();
+            String[] vImgArr=Utils.getQQShowData(vImgStr);
+            loadQQshowImg(vImgArr,moveUserImg);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
     }
 
     RadioGroup.OnCheckedChangeListener checkedchangelistner = new RadioGroup.OnCheckedChangeListener() {

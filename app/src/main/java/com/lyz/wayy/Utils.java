@@ -14,6 +14,7 @@ import android.view.SurfaceView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -30,7 +31,12 @@ public class Utils {
     }
 
     public static class OkHttps{
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client =new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .build();
+
        public String run(String url) throws IOException {
             Request request = new Request.Builder()
                     .url(url)

@@ -398,15 +398,15 @@
             android:id="@+id/move_area"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="60dp"
-            android:layout_marginRight="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:background="#00000000"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true">
 
             <ImageView
                 android:id="@+id/move_user_img"
-                android:src="@drawable/egg0"
+                android:src="@mipmap/init"
                 android:layout_width="130dp"
                 android:layout_height="200dp"
                 android:scaleType="fitXY"
@@ -417,7 +417,7 @@
 
             <ImageView
                 android:id="@+id/move_img"
-                android:src="@drawable/egg0"
+                android:src="@mipmap/init"
                 android:layout_width="60dp"
                 android:layout_height="80dp"
                 android:scaleType="fitXY"
