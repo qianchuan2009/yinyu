@@ -1,10 +1,13 @@
 package com.lyz.wayy;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +35,8 @@ import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.main.frame.FragmentFriend;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     TextView myLevel;
     @BindView(R.id.my_dog_level)
     TextView myDogLevel;
+
+    @BindView(R.id.move_user_img)
+    ImageView moveUserImg;
 
     private ImageView imageView;//点击出现下方区域的图片
     private RadioGroup radioGroup;//下方tab页
@@ -181,7 +189,40 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         int DogId=dog.getDogId();
         int step=dog.getStep();
         setDog2Front(step,DogId);
+
+        //设置人物到前台
+        try{
+            JSONObject jsonObj=new JSONObject(userJsonStr);
+            String vImgStr=jsonObj.getString("virtualimage");
+            String[] vImgArr=Utils.getQQShowData(vImgStr);
+            loadQQshowImg(vImgArr,moveUserImg);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
+    //设置qq形象
+    private void loadQQshowImg(String[] arr,ImageView image){
+        ArrayList<Drawable> drawableArr =new ArrayList<Drawable>();
+//        Drawable[] array = new Drawable[26];
+        for (int i=0;i<arr.length;i++){
+            if (!arr[i].equalsIgnoreCase("0")){
+                 Drawable bitmap1 = Utils.getImageFromAsserts(this,"virtualimage/"+i+"/"+arr[i]+".gif");
+                drawableArr.add(bitmap1);
+            }
+
+        }
+//
+//        Bitmap bitmap2 = ((BitmapDrawable) getResources().getDrawable(
+//                R.drawable.go)).getBitmap();
+        Drawable[] array =  drawableArr.toArray(new Drawable[drawableArr.size()]);
+        LayerDrawable la = new LayerDrawable(array);
+//        // 其中第一个参数为层的索引号，后面的四个参数分别为left、top、right和bottom
+        la.setLayerInset(0, 0, 0, 0, 0);
+////        la.setLayerInset(1, 20, 20, 20, 20);
+        image.setImageDrawable(la);
+    }
+
 
     //设置宠物到前台
     private  void setDog2Front(int step,int DogId){
@@ -287,8 +328,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         }).start();
 
+    }
+
+
+    //设置用户形象到主台
+    private void setUserImg2Front(String imgStr){
 
     }
+
 
     //获取朋友信息
     private void getFrdInfo(final Friend frd){
@@ -496,4 +543,5 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @OnClick(R.id.frd_msg)
     public void onViewClicked() {
     }
+
 }

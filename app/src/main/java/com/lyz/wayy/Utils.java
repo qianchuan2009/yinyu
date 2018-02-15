@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.TypedValue;
@@ -11,6 +12,7 @@ import android.view.SurfaceView;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 import okhttp3.OkHttpClient;
@@ -237,5 +239,112 @@ public class Utils {
 //    }
 
 
+//    虚拟形象算法
+//    setQQShowData(data["virtualimage"])；
+    public  static String[]  getQQShowData(String arg1) {
+//        int i;
+        String[] showArray;
+        String showdata;
 
+        showdata = arg1.toString();
+        showArray = showdata.split("-");//将0-0-0-0-0-init-init-init-init-0-init-0-0-0-init-0-0-0-0-init-0-0-0-0-0-0去除-，变数组
+//        showQQData = showArray;//给单例，进行监听
+        return showQQData(showArray);
+    }
+//-------------------------
+
+    private static String[] showQQData(String[] arg1)
+    {
+        String[] _showQQData = arg1;
+        _showQQData[1]="0";
+        if(!_showQQData[22].equalsIgnoreCase("0")) {
+            _showQQData[1] = "0";
+            _showQQData[2] = "0";
+            _showQQData[3] = "0";
+            _showQQData[4] = "0";
+            _showQQData[5] = "0";
+            _showQQData[6] = "0";
+            _showQQData[7] = "0";
+            _showQQData[8] = "0";
+            _showQQData[9] = "0";
+            _showQQData[10] = "0";
+            _showQQData[11] = "0";
+            _showQQData[12] = "0";
+            _showQQData[13] = "0";
+            _showQQData[14] = "0";
+            _showQQData[15] = "0";
+            _showQQData[16] = "0";
+            _showQQData[17] = "0";
+            _showQQData[18] = "0";
+            _showQQData[19] = "0";
+            _showQQData[20] = "0";
+            _showQQData[21] = "0";
+        }
+        if(!_showQQData[9].equalsIgnoreCase("0")) {
+            _showQQData[6] = "0";
+            _showQQData[8] = "0";
+            _showQQData[13] = "0";
+            _showQQData[16] = "0";
+            _showQQData[22] = "0";
+        }
+        if(!_showQQData[11].equalsIgnoreCase("0")) {
+            _showQQData[10] = "0";
+            _showQQData[7] = "0";
+            _showQQData[13] = "0";
+            _showQQData[16] = "0";
+            _showQQData[22] = "0";
+        }
+        if(!_showQQData[13].equalsIgnoreCase("0")) {
+            _showQQData[6] = "0";
+            _showQQData[7] = "0";
+            _showQQData[8] = "0";
+            _showQQData[9] = "0";
+            _showQQData[10] = "0";
+            _showQQData[11] = "0";
+            _showQQData[16] = "0";
+            _showQQData[22] = "0";
+        }
+        if(!_showQQData[16].equalsIgnoreCase("0")) {
+            _showQQData[8] = "0";
+            _showQQData[9] = "0";
+            _showQQData[10] = "0";
+            _showQQData[11] = "0";
+            _showQQData[13] = "0";
+            _showQQData[22] = "0";
+        }
+        if(!_showQQData[19].equalsIgnoreCase("0")) {
+            _showQQData[5] = _showQQData[19];
+        }
+        if(!_showQQData[12].equalsIgnoreCase("0")) {
+            _showQQData[4] = _showQQData[12];
+        }
+        if(!_showQQData[25].equalsIgnoreCase("0")) {
+            _showQQData[2] = _showQQData[25]="0";
+        }
+        if(_showQQData[16].equalsIgnoreCase("022")){
+            _showQQData[19] = "0";
+            _showQQData[5] = "0";
+        }
+        return _showQQData;
+    }
+
+    public static Drawable getImageFromAsserts(final Context ctx, String fileName) {
+        try {
+            InputStream is = ctx.getResources().getAssets().open(fileName);
+            return Drawable.createFromStream(is, null);
+        } catch (IOException e) {
+            if (e != null) {
+                e.printStackTrace();
+            }
+        } catch (OutOfMemoryError e) {
+            if (e != null) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            if (e != null) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

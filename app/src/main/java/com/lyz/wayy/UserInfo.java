@@ -7,6 +7,7 @@ package com.lyz.wayy;
 public class UserInfo {
 
     /**
+     * "virtualimage": "0-0-0-0-0-init-init-init-init-0-init-0-0-0-init-0-0-0-0-init-0-0-0-0-0-0",//虚拟形象的参数
      * exp : 243300
      * charm : 0
      * dog : {"dogId":4,"dogFeedTime":172800,"dogUnWorkTime":0,"step":-2}
@@ -20,7 +21,7 @@ public class UserInfo {
      * b : 0
      * items : {"1":{"itemId":1},"2":{"itemId":2},"3":{"itemId":3},"4":{"itemId":4}}
      */
-
+    private String virtualimage;
     private int exp;
     private int charm;
     private DogBean dog;
@@ -31,6 +32,8 @@ public class UserInfo {
     private int l;
     @com.google.gson.annotations.SerializedName("c")
     private int letters;
+
+
 
     public static class DogBean {
         /**
