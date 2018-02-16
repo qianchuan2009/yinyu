@@ -61,9 +61,12 @@ public class AdapterPkg extends RecyclerView.Adapter {
         final PkgInfo pkg=list.get(position);
         AdapterPkg.ViewHolder viewHolder=(AdapterPkg.ViewHolder)holder;
         String jieDuanStr="Animal"+pkg.getDogId()+"_04";
-        String url="file:///android_asset/Animal/Animal"+pkg.getDogId()+"/"+jieDuanStr+"/"+"animal"+pkg.getDogId()+"_04_0001.png";
+//        String url="file:///android_asset/Animal/Animal"+pkg.getDogId()+"/"+jieDuanStr+"/"+"animal"+pkg.getDogId()+"_04_0001.png";
 //        viewHolder.textView.setText(frd.getDogName());
-        Glide.with(context).load(url).into(viewHolder.imageView);
+//        Glide.with(context).load(url).into(viewHolder.imageView);
+        int id = context.getResources().getIdentifier("animal"+pkg.getDogId()+"_04_0001", "drawable", context.getPackageName());
+        viewHolder.imageView.setImageResource(id);
+
         final int num=position;
         if (listener!=null){
             viewHolder.imageView.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,7 @@
 package com.lyz.wayy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -13,12 +14,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -33,6 +38,11 @@ import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.bean.FriendInfo;
 import com.lyz.wayy.bean.FrontDog;
 import com.lyz.wayy.bean.PkgInfo;
+import com.lyz.wayy.lucky.AdapterLucky;
+import com.lyz.wayy.lucky.LuckyBean;
+import com.lyz.wayy.lucky.LuckyUtil;
+import com.lyz.wayy.main.ListViewActivity;
+import com.lyz.wayy.main.MainFragment;
 import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.main.frame.FragmentFriend;
 
@@ -259,8 +269,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnchoujiang:
+                showLuckyDlg();
                 break;
             case R.id.duihua:
+
+                break;
+            case R.id.frd_msg:
+
                 break;
         }
     }
@@ -574,8 +589,71 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         return true;//所有的motionEvent都交给imageView处理
     }
 
-    @OnClick(R.id.frd_msg)
-    public void onViewClicked() {
+
+
+    //////////抽奖
+    private void showLuckyDlg(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this,R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_choujiang, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        TextView leftTime= (TextView) dlgView
+                .findViewById(R.id.lucky_left_time);//设置标题
+        GridView luckyGridView= (GridView) dlgView.findViewById(R.id.lucky_gridView);
+        //取消或确定按钮监听事件处理
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        //设置背景透明
+        WindowManager m = getWindowManager();
+        android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+        p.height = Utils.dp2px(300,MainActivity.this);
+        p.width = Utils.dp2px(260,MainActivity.this);
+        dialog.getWindow().setAttributes(p);//设置生效
+
+        ArrayList<LuckyBean.ItemBean> luckyListRandom= LuckyUtil.getGiftArray();
+        luckyGridView.setAdapter(new AdapterLucky(this,luckyListRandom));
+        luckyGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Toast.makeText(getActivity(), "点击了条目" + position, Toast.LENGTH_SHORT).show();
+                getLuckyInfo(dlgView);
+            }
+        });
+
+    }
+
+
+    //获取奖励信息
+    private void getLuckyInfo(final View dlgView){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=task&act=luckDraw&luckNumber=1&web_uid=" + ConstFile.uId;
+                    String response = example.run(url);
+                    final LuckyBean luckyBean=LuckyBean.objectFromData(response);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ImageView imgView=dlgView.findViewById(R.id.lucky_msg_img);
+                            if (luckyBean.getCode()==0){//无抽奖次数了
+                                imgView.setImageResource(R.drawable.time_over);
+                                AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
+                                animationDrawable.start();
+                            }else{
+
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }
