@@ -600,9 +600,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         builder.setCancelable(false);
         TextView leftTime= (TextView) dlgView
                 .findViewById(R.id.lucky_left_time);//设置标题
+        int value=Integer.valueOf(userBean.getLuckDraw());
+        leftTime.setText(userBean.getLuckDraw().equalsIgnoreCase("0")?"0":Math.abs(value)+"");
         GridView luckyGridView= (GridView) dlgView.findViewById(R.id.lucky_gridView);
         //取消或确定按钮监听事件处理
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.show();
 
         //设置背景透明
@@ -611,6 +613,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         p.height = Utils.dp2px(300,MainActivity.this);
         p.width = Utils.dp2px(260,MainActivity.this);
         dialog.getWindow().setAttributes(p);//设置生效
+
+        ImageView closeBtn= (ImageView) dialog.findViewById(R.id.lucky_close);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
 
         ArrayList<LuckyBean.ItemBean> luckyListRandom= LuckyUtil.getGiftArray();
         luckyGridView.setAdapter(new AdapterLucky(this,luckyListRandom));
@@ -639,13 +649,30 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            final RelativeLayout rl=dlgView.findViewById(R.id.lucky_msg_root);
+                            rl.setVisibility(View.VISIBLE);
+
                             ImageView imgView=dlgView.findViewById(R.id.lucky_msg_img);
+                            ImageView imgOkBtn= dlgView.findViewById(R.id.lucky_msg_ok);
+                            imgOkBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    rl.setVisibility(View.GONE);
+                                }
+                            });
+
+
                             if (luckyBean.getCode()==0){//无抽奖次数了
                                 imgView.setImageResource(R.drawable.time_over);
                                 AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
                                 animationDrawable.start();
                             }else{
+                                imgView.setImageResource(R.drawable.jianglishuoming);
+                                AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
+                                animationDrawable.start();
 
+                                TextView textView= (TextView) dlgView.findViewById(R.id.lucky_msg_text);
+                                textView.setText(luckyBean.getItem().getName());
                             }
                         }
                     });

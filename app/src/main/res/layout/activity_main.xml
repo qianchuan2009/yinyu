@@ -253,7 +253,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="21dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:id="@+id/frd_area">
 
                 <LinearLayout
