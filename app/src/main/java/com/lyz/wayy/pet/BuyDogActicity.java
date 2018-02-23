@@ -1,13 +1,16 @@
 package com.lyz.wayy.pet;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -15,13 +18,21 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lyz.wayy.ConstFile;
+import com.lyz.wayy.MainActivity;
 import com.lyz.wayy.R;
 import com.lyz.wayy.Utils;
 import com.lyz.wayy.bean.BuyDog;
 import com.lyz.wayy.bean.PkgInfo;
+import com.lyz.wayy.lucky.AdapterLucky;
+import com.lyz.wayy.lucky.LuckyBean;
+import com.lyz.wayy.lucky.LuckyUtil;
 import com.lyz.wayy.main.frame.FragmentPkg;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -76,7 +87,8 @@ public class BuyDogActicity extends AppCompatActivity {
         buydogGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                BuyDog buyDog=dataList.get(i);
+                showBuyDogDlg(buyDog);
             }
         });
         buydogGridView.setAdapter(adapterBuyDog);
@@ -151,5 +163,108 @@ public class BuyDogActicity extends AppCompatActivity {
     @OnClick(R.id.buydog_back)
     public void onViewClicked() {
         finish();
+    }
+
+    /////////
+    private void showBuyDogDlg(final BuyDog buyDog){
+        AlertDialog.Builder builder = new AlertDialog.Builder(BuyDogActicity.this,R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_buydog, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        //取消或确定按钮监听事件处理
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        ImageView  touxiang=dlgView.findViewById(R.id.bugdog_touxiang);
+        String tid=buyDog.getTId();
+//        int id = getResources().getIdentifier("animal"+tid+"_04_0001", "drawable", BuyDogActicity.this.getPackageName());
+//        touxiang.setImageResource(id);
+
+        int id = BuyDogActicity.this.getResources().getIdentifier("animal"+tid+"_04", "drawable", getPackageName());
+//            Drawable drawable = getResources().getDrawable(id);
+        touxiang.setImageResource(id);
+        final AnimationDrawable animationDrawable = (AnimationDrawable) touxiang.getDrawable();
+        animationDrawable.start();
+
+        TextView title=dlgView.findViewById(R.id.title);
+        title.setText(buyDog.getTName());
+
+        TextView desc=dlgView.findViewById(R.id.desc);
+        desc.setText(buyDog.getDepict());
+
+        TextView price=dlgView.findViewById(R.id.price);
+        String priceStr=buyDog.getList().get_$1().getFBPrice()+"";
+        price.setText(priceStr);
+
+        TextView price2=dlgView.findViewById(R.id.price2);
+        price2.setText(priceStr);
+
+        //设置背景透明
+//        WindowManager m = getWindowManager();
+//        android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+//        p.height = Utils.dp2px(300,MainActivity.this);
+//        p.width = Utils.dp2px(260,MainActivity.this);
+//        dialog.getWindow().setAttributes(p);//设置生效
+
+        ImageView closeBtn= (ImageView) dialog.findViewById(R.id.buydog_cancel);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                animationDrawable.stop();
+            }
+        });
+
+        ImageView okBtn= (ImageView) dialog.findViewById(R.id.buydog_ok);
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buyDogFunc(buyDog);
+                animationDrawable.stop();
+                dialog.dismiss();
+            }
+        });
+
+    }
+
+    private  void buyDogFunc(final BuyDog buyDog){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=buy&type=4&id="+buyDog.getTId()+"&web_uid=" +ConstFile.uId;
+                    final String response = example.run(url);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (response.trim().length()==0){
+                                Toast.makeText(BuyDogActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
+                            }else{
+                                JSONObject jsonObject= null;
+                                try {
+                                    jsonObject = new JSONObject(response);
+                                    if (jsonObject.getInt("code")==1){
+                                        Toast.makeText(BuyDogActicity.this, "购买成功", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(BuyDogActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            }
+                        }
+                    });
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
