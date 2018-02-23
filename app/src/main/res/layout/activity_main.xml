@@ -384,6 +384,24 @@
                     android:button="@null"
                     android:background="@drawable/i_tool_p"
                     android:gravity="center" />
+                <RadioButton
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/tab3"
+                    android:text=""
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:button="@null"
+                    android:background="@drawable/main"
+                    android:gravity="center" />
+                <RadioButton
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/tab4"
+                    android:text=""
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:button="@null"
+                    android:background="@drawable/petbutoon"
+                    android:gravity="center" />
             </RadioGroup>
             <FrameLayout
                 android:layout_below="@id/radio_group"

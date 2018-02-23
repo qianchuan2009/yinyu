@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_height="40dp"
+     android:layout_width="50dp">
+
+     <ImageView
+             android:id="@+id/lucky_item_imageview"
+            android:layout_height="50dp"
+             android:layout_width="50dp"
+            android:src="@mipmap/wait_0000"
+           android:layout_centerHorizontal="true">
+     </ImageView>
+
+</LinearLayout>

@@ -40,6 +40,7 @@
             android:name="com.lyz.wayy.MainActivity"
             android:screenOrientation="landscape" />
         <activity android:name=".LoginActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".pet.BuyDogActicity" android:screenOrientation="landscape"/>
 
         <activity android:name="com.lyz.wayy.main.ListViewActivity" android:screenOrientation="landscape"/>
         <activity android:name="com.lyz.wayy.main.WebActivity2" android:screenOrientation="landscape"/>

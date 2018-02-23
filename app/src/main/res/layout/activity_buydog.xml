@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/buydog_main_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff0d9"
+        android:paddingBottom="82dp">
+        <LinearLayout
+            android:id="@+id/buydog_eb"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/buydog_back"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/buy_back" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/goldstar" />
+
+                <TextView
+                    android:id="@+id/mystar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="1999"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/eb" />
+
+                <TextView
+                    android:id="@+id/fb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="1999"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/buydog_gridView"
+            android:layout_below="@id/buydog_eb"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="12dp"
+            android:horizontalSpacing="10dp"
+            android:verticalSpacing="10dp"
+            android:paddingLeft="80dp"
+            android:paddingRight="80dp"
+            android:numColumns="3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </GridView>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:background="#00000000"
+        android:layout_height="120dp">
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#00000000"
+            android:weightSum="1">
+            <RadioButton
+                android:layout_marginLeft="10dp"
+
+                android:id="@+id/tab2"
+                android:text=""
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:button="@null"
+                android:background="@drawable/i_tool"
+                android:gravity="center" />
+        </RadioGroup>
+        <FrameLayout
+            android:layout_below="@id/radio_group"
+            android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+        </FrameLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

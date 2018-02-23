@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:background="#00000000"
+    android:layout_height="300dp">
+
+    <RelativeLayout
+        android:id="@+id/luck_main_body"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="30dp"
+        android:background="@mipmap/luckday"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/lucky_left_time"
+            android:text="11"
+            android:layout_marginTop="15dp"
+            android:textColor="#ff9900"
+            android:layout_marginLeft="110dp"
+            android:layout_height="wrap_content" />
+
+        <GridView
+            android:id="@+id/lucky_gridView"
+            android:layout_below="@id/lucky_left_time"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="12dp"
+            android:horizontalSpacing="2dp"
+            android:verticalSpacing="5dp"
+            android:paddingLeft="4dp"
+            android:numColumns="3"
+            android:layout_width="170dp"
+            android:layout_height="180dp">
+
+        </GridView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="250dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:src="@drawable/lucky_card_title"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="17dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="219dp">
+        <ImageView
+            android:id="@+id/lucky_close"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="-20dp"
+            android:layout_marginTop="-5dp"
+            android:layout_weight="1"
+            android:src="@drawable/lucky_close" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/lucky_msg_root"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="280dp">
+        <RelativeLayout
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:alpha="0.5"
+            android:background="@color/balck"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/lucky_msg"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_width="240dp"
+            android:layout_height="240dp">
+             <ImageView
+                 android:id="@+id/lucky_msg_img"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent" />
+             <TextView
+                 android:id="@+id/lucky_msg_text"
+                 android:layout_alignTop="@id/lucky_msg_img"
+                 android:text=""
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content" />
+
+             <ImageView
+                 android:id="@+id/lucky_msg_ok"
+                 android:layout_alignTop="@id/lucky_msg_text"
+                 android:layout_marginTop="165dp"
+                 android:layout_width="40dp"
+                 android:layout_centerHorizontal="true"
+                 android:src="@drawable/ok3"
+                 android:layout_height="40dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

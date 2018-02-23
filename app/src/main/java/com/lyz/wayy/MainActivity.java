@@ -3,8 +3,8 @@ package com.lyz.wayy;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -16,9 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Display;
 import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -33,7 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.util.Util;
 import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.bean.FriendInfo;
 import com.lyz.wayy.bean.FrontDog;
@@ -41,13 +38,13 @@ import com.lyz.wayy.bean.PkgInfo;
 import com.lyz.wayy.lucky.AdapterLucky;
 import com.lyz.wayy.lucky.LuckyBean;
 import com.lyz.wayy.lucky.LuckyUtil;
-import com.lyz.wayy.main.ListViewActivity;
-import com.lyz.wayy.main.MainFragment;
 import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.main.frame.FragmentFriend;
+import com.lyz.wayy.pet.BuyDogActicity;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -214,25 +211,46 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     //设置qq形象
-    private void loadQQshowImg(String[] arr,ImageView image){
-        ArrayList<Drawable> drawableArr =new ArrayList<Drawable>();
+    private void loadQQshowImg(final String[] arr, final ImageView image) throws IOException {
+        final ArrayList<Drawable> drawableArr =new ArrayList<Drawable>();
 //        Drawable[] array = new Drawable[26];
-        for (int i=0;i<arr.length;i++){
-            if (!arr[i].equalsIgnoreCase("0")){
-                 Drawable bitmap1 = Utils.getImageFromAsserts(this,"virtualimage/"+i+"/"+arr[i]+".gif");
-                drawableArr.add(bitmap1);
-            }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < arr.length; i++) {
+                    if (!arr[i].equalsIgnoreCase("0")) {
+                        Utils.OkHttps example = new Utils.OkHttps();
+//                 Drawable bitmap1 = Utils.getImageFromAsserts(this,"virtualimage/"+i+"/"+arr[i]+".gif");
+                        String url = ConstFile.serverUrl + "images\\virtualimage\\" + i + "\\" + arr[i] + ".gif";
+                        String response = null;
+                        try {
+                            response = example.run(url);
+                            byte[] bytes = response.getBytes();
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            Drawable drawable = new BitmapDrawable(bitmap);
+                            drawableArr.add(drawable);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
 
-        }
-//
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //
 //        Bitmap bitmap2 = ((BitmapDrawable) getResources().getDrawable(
 //                R.drawable.go)).getBitmap();
-        Drawable[] array =  drawableArr.toArray(new Drawable[drawableArr.size()]);
-        LayerDrawable la = new LayerDrawable(array);
+                        Drawable[] array = drawableArr.toArray(new Drawable[drawableArr.size()]);
+                        LayerDrawable la = new LayerDrawable(array);
 //        // 其中第一个参数为层的索引号，后面的四个参数分别为left、top、right和bottom
-        la.setLayerInset(0, 0, 0, 0, 0);
+                        la.setLayerInset(0, 0, 0, 0, 0);
 ////        la.setLayerInset(1, 20, 20, 20, 20);
-        image.setImageDrawable(la);
+                        image.setImageDrawable(la);
+                    }
+                });
+            }}).start();
+
     }
 
 
@@ -455,6 +473,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     break;
                 case R.id.tab2:
                     change2();
+                    break;
+                case R.id.tab3:
+                    //显示当前的人物状态
+                    break;
+                case R.id.tab4:
+                    //打开宠物购买
+                    Intent intent = new Intent(MainActivity.this, BuyDogActicity.class);
+//                    intent.putExtra("uid", uid);
+                    startActivity(intent);
                     break;
                 default:
                     break;
