@@ -85,6 +85,9 @@ public class FragmentPkg extends Fragment {
                     String response = example.run(url);
 //                    JSONArray arr=new JSONArray(response);
                     dataList= PkgInfo.arrayPkgInfoFromData(response,"4");
+                    if(dataList==null){
+                        dataList=new ArrayList<>();
+                    }
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

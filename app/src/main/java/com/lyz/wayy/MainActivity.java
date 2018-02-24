@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import pl.droidsonroids.gif.GifDrawable;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
 
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     TextView myDogLevel;
 
     @BindView(R.id.move_user_img)
-    ImageView moveUserImg;
+    pl.droidsonroids.gif.GifImageView moveUserImg;
 
     private ImageView imageView;//点击出现下方区域的图片
     private RadioGroup radioGroup;//下方tab页
@@ -222,13 +224,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         Utils.OkHttps example = new Utils.OkHttps();
 //                 Drawable bitmap1 = Utils.getImageFromAsserts(this,"virtualimage/"+i+"/"+arr[i]+".gif");
                         String url = ConstFile.serverUrl + "images\\virtualimage\\" + i + "\\" + arr[i] + ".gif";
-                        String response = null;
+                        ResponseBody response = null;
                         try {
-                            response = example.run(url);
-                            byte[] bytes = response.getBytes();
-                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            Drawable drawable = new BitmapDrawable(bitmap);
-                            drawableArr.add(drawable);
+                            response = example.run2(url);
+                            byte[] bytes = response.bytes();
+//                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                            Drawable drawable = new BitmapDrawable(bitmap);
+//                            drawableArr.add(drawable);
+                            GifDrawable gifFromBytes = new GifDrawable( bytes );
+                            drawableArr.add(gifFromBytes);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -480,7 +484,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 case R.id.tab4:
                     //打开宠物购买
                     Intent intent = new Intent(MainActivity.this, BuyDogActicity.class);
-//                    intent.putExtra("uid", uid);
+                    intent.putExtra("star", userBean.getMoney());
+                    intent.putExtra("fb", userBean.getFB());
                     startActivity(intent);
                     break;
                 default:
@@ -689,7 +694,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             });
 
 
-                            if (luckyBean.getCode()==0){//无抽奖次数了
+                            if ((luckyBean==null)||(luckyBean.getCode()==0)){//无抽奖次数了
                                 imgView.setImageResource(R.drawable.time_over);
                                 AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
                                 animationDrawable.start();

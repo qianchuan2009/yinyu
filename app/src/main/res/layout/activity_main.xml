@@ -422,7 +422,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true">
 
-            <ImageView
+            <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/move_user_img"
                 android:src="@mipmap/init"
                 android:layout_width="130dp"

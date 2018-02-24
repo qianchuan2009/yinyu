@@ -1,5 +1,6 @@
 package com.lyz.wayy.pet;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,7 +61,7 @@ public class BuyDogActicity extends AppCompatActivity {
     @BindView(R.id.mystar)
     TextView mystar;
     @BindView(R.id.fb)
-    TextView fb;
+    TextView fbView;
     private FragmentManager fragmentManager = getSupportFragmentManager();
 
 
@@ -68,12 +69,22 @@ public class BuyDogActicity extends AppCompatActivity {
     private RecyclerView recyclerView; //显示图片的布局
 //    private Handler handler;//传过来的handler
     ArrayList<BuyDog> dataList=new ArrayList<>();
+
+    int fb;//fb
+    int star;//
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buydog);
         ButterKnife.bind(this);
 //        radioGroup.setOnCheckedChangeListener(checkedchangelistner);
+        Intent intent = getIntent();
+        String fbStr=intent.getStringExtra("fb");
+        fb=Integer.parseInt(fbStr);
+        star=intent.getIntExtra("star",0);
+        mystar.setText(star+"");
+        fbView.setText(fb+"");
 
         change2();
         initDogShop();
@@ -247,7 +258,11 @@ public class BuyDogActicity extends AppCompatActivity {
                                 try {
                                     jsonObject = new JSONObject(response);
                                     if (jsonObject.getInt("code")==1){
-                                        Toast.makeText(BuyDogActicity.this, "购买成功", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BuyDogActicity.this, jsonObject.getString("direction"), Toast.LENGTH_SHORT).show();
+                                        change2();
+                                        int fbs= Integer.parseInt(fbView.getText()+"");
+                                        fbs+=jsonObject.getInt("FB");
+                                        fbView.setText(fb+"");
                                     }else{
                                         Toast.makeText(BuyDogActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
                                     }

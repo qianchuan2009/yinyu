@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="350dp"
+    android:background="#00000000"
+    android:layout_height="300dp">
+
+    <RelativeLayout
+        android:id="@+id/luck_main_body"
+        android:layout_width="340dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/dhnote"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/lucky_left_time"
+            android:text="\u3000\u3000亲爱的同学，恭喜你获得了老师奖励的小星星。这些小星星是你进步的体现，也是老师对你学习的认可。同时这些小星星也是你成长的记忆，快把它收集起来，兑换成经验值吧！
+\u3000\u3000赶快找到小星星上面的一串文字，把他输入到下面的兑换框中，这样你就获得了成长经验和金币了。如果你是会员，获得的奖励会更多啊。"
+            android:layout_marginTop="35dp"
+            android:textColor="#ff9900"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/duihuan_msg"
+            android:layout_width="match_parent"
+            android:layout_below="@id/lucky_left_time"
+            android:text="请输入兑换码"
+            android:layout_marginTop="15dp"
+            android:textColor="#9a1c18"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textSize="18sp"
+            android:paddingLeft="50dp"
+            android:layout_height="wrap_content" />
+
+
+            <EditText
+                android:id="@+id/edt"
+                android:layout_centerVertical="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="25dp"
+                android:layout_marginLeft="35dp"
+                android:layout_width="180dp"
+                android:layout_height="30dp" />
+
+            <ImageView
+                android:id="@+id/lucky_msg_duihuan"
+                android:layout_width="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/duihuanbutton"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="22dp"
+                android:layout_height="40dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="340dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:src="@drawable/lucky_get"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        >
+        <ImageView
+            android:id="@+id/lucky_close"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_weight="1"
+            android:src="@drawable/lucky_close" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/lucky_msg_root"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="280dp">
+        <RelativeLayout
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:alpha="0.5"
+            android:background="@color/balck"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/lucky_msg"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_width="240dp"
+            android:layout_height="240dp">
+             <ImageView
+                 android:id="@+id/lucky_msg_img"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent" />
+             <TextView
+                 android:id="@+id/lucky_msg_text"
+                 android:layout_alignTop="@id/lucky_msg_img"
+                 android:text=""
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content" />
+
+             <ImageView
+                 android:id="@+id/lucky_msg_ok"
+                 android:layout_alignTop="@id/lucky_msg_text"
+                 android:layout_marginTop="165dp"
+                 android:layout_width="40dp"
+                 android:layout_centerHorizontal="true"
+                 android:src="@drawable/ok3"
+                 android:layout_height="40dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
