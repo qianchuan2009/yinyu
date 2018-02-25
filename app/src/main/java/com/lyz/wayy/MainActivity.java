@@ -2,11 +2,8 @@ package com.lyz.wayy;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -21,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +27,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.lyz.wayy.bean.Friend;
@@ -38,10 +37,11 @@ import com.lyz.wayy.bean.PkgInfo;
 import com.lyz.wayy.lucky.AdapterLucky;
 import com.lyz.wayy.lucky.LuckyBean;
 import com.lyz.wayy.lucky.LuckyUtil;
-import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.main.frame.FragmentFriend;
+import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.pet.BuyDogActicity;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -52,6 +52,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.ResponseBody;
 import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
 
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     TextView myDogLevel;
 
     @BindView(R.id.move_user_img)
-    pl.droidsonroids.gif.GifImageView moveUserImg;
+    GifImageView moveUserImg;
 
     private ImageView imageView;//点击出现下方区域的图片
     private RadioGroup radioGroup;//下方tab页
@@ -173,48 +174,48 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         mystar.setText(userBean.getMoney() + "");
 
         int level = CharmUtil.expToGrade4Man(userBean.getExp());
-        myLevel.setText(level+"");
-        int loc2=CharmUtil.gradeToExp4Man(level);
-        int loc1=CharmUtil.gradeToExp4Man(level + 1);
+        myLevel.setText(level + "");
+        int loc2 = CharmUtil.gradeToExp4Man(level);
+        int loc1 = CharmUtil.gradeToExp4Man(level + 1);
         int _nextExp = userBean.getExp() - loc2;
-        float per=(float) _nextExp / (loc1 - loc2);
-        int percent = (int)(per* 100);
+        float per = (float) _nextExp / (loc1 - loc2);
+        int percent = (int) (per * 100);
         int levelExp = loc1 - loc2;
         myProgress.setProgress(percent);
-        myProgressPer.setText(_nextExp+"/"+levelExp);
+        myProgressPer.setText(_nextExp + "/" + levelExp);
 
 
-        int dogLevel=CharmUtil.toLevel(userBean.getCharm());
-        myDogLevel.setText(dogLevel+"");
-        int dogCur=CharmUtil.currentLevelValue(userBean.getCharm());
-        int dogNext=CharmUtil.needLevelValue(userBean.getCharm());
-        int has=userBean.getCharm()-dogCur;
-        float p=has/(dogNext-dogCur);
-        myDogProgress.setProgress((int)(p*100));
-        myDogProgressPer.setText(has+"/"+dogNext);
+        int dogLevel = CharmUtil.toLevel(userBean.getCharm());
+        myDogLevel.setText(dogLevel + "");
+        int dogCur = CharmUtil.currentLevelValue(userBean.getCharm());
+        int dogNext = CharmUtil.needLevelValue(userBean.getCharm());
+        int has = userBean.getCharm() - dogCur;
+        float p = has / (dogNext - dogCur);
+        myDogProgress.setProgress((int) (p * 100));
+        myDogProgressPer.setText(has + "/" + dogNext);
 
 
         //设置宠物
 
-        UserInfo.DogBean dog=UserInfo.DogBean.objectFromData(userJsonStr,"dog");
-        int DogId=dog.getDogId();
-        int step=dog.getStep();
-        setDog2Front(step,DogId);
+        UserInfo.DogBean dog = UserInfo.DogBean.objectFromData(userJsonStr, "dog");
+        int DogId = dog.getDogId();
+        int step = dog.getStep();
+        setDog2Front(step, DogId);
 
         //设置人物到前台
-        try{
-            JSONObject jsonObj=new JSONObject(userJsonStr);
-            String vImgStr=jsonObj.getString("virtualimage");
-            String[] vImgArr=Utils.getQQShowData(vImgStr);
-            loadQQshowImg(vImgArr,moveUserImg);
-        }catch (Exception e){
+        try {
+            JSONObject jsonObj = new JSONObject(userJsonStr);
+            String vImgStr = jsonObj.getString("virtualimage");
+            String[] vImgArr = Utils.getQQShowData(vImgStr);
+            loadQQshowImg(vImgArr, moveUserImg);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     //设置qq形象
     private void loadQQshowImg(final String[] arr, final ImageView image) throws IOException {
-        final ArrayList<Drawable> drawableArr =new ArrayList<Drawable>();
+        final ArrayList<Drawable> drawableArr = new ArrayList<Drawable>();
 //        Drawable[] array = new Drawable[26];
         new Thread(new Runnable() {
             @Override
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 //                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 //                            Drawable drawable = new BitmapDrawable(bitmap);
 //                            drawableArr.add(drawable);
-                            GifDrawable gifFromBytes = new GifDrawable( bytes );
+                            GifDrawable gifFromBytes = new GifDrawable(bytes);
                             drawableArr.add(gifFromBytes);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -253,32 +254,33 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         image.setImageDrawable(la);
                     }
                 });
-            }}).start();
+            }
+        }).start();
 
     }
 
 
     //设置宠物到前台
-    private  void setDog2Front(int step,int DogId){
+    private void setDog2Front(int step, int DogId) {
         ViewGroup.LayoutParams params = moveImg.getLayoutParams(); // 获取对话框当前的参数值
-        if (step<1){
-            params.width = Utils.dp2px(40,this);
-            params.height = Utils.dp2px(50,this);
+        if (step < 1) {
+            params.width = Utils.dp2px(40, this);
+            params.height = Utils.dp2px(50, this);
             moveImg.setLayoutParams(params);
-            if (step==-2){
+            if (step == -2) {
                 moveImg.setImageResource(R.drawable.egg0);
-            }else if(step==-1){
+            } else if (step == -1) {
                 moveImg.setImageResource(R.drawable.egg1);
-            }else{
+            } else {
                 moveImg.setImageResource(R.drawable.egg2);
             }
-        }else{
+        } else {
 
-            params.width = Utils.dp2px(100,this);
-            params.height = Utils.dp2px(100,this);
+            params.width = Utils.dp2px(100, this);
+            params.height = Utils.dp2px(100, this);
             moveImg.setLayoutParams(params);
 
-            int id = getResources().getIdentifier("animal"+DogId+"_0"+step, "drawable", getPackageName());
+            int id = getResources().getIdentifier("animal" + DogId + "_0" + step, "drawable", getPackageName());
 //            Drawable drawable = getResources().getDrawable(id);
             moveImg.setImageResource(id);
             AnimationDrawable animationDrawable = (AnimationDrawable) moveImg.getDrawable();
@@ -294,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 showLuckyDlg();
                 break;
             case R.id.duihua:
-
+                showDuiHuanDlg();
                 break;
             case R.id.frd_msg:
 
@@ -335,11 +337,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 case CHANGE_NAME://朋友
                     Bundle bundle = msg.getData();
                     Friend frd = (Friend) bundle.getSerializable("friend");
-                    getFrdInfo( frd);
+                    getFrdInfo(frd);
                     break;
                 case CHANGE_PKG://背包
-                    Bundle bundle2=msg.getData();
-                    PkgInfo pkg= (PkgInfo) bundle2.getSerializable("pkg");
+                    Bundle bundle2 = msg.getData();
+                    PkgInfo pkg = (PkgInfo) bundle2.getSerializable("pkg");
                     getDogAndSet2Front(pkg);
                     break;
                 default:
@@ -349,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     };
 
     //设置宠物到主台
-    private  void getDogAndSet2Front(final PkgInfo pkgInfo){
+    private void getDogAndSet2Front(final PkgInfo pkgInfo) {
 
         new Thread(new Runnable() {
             @Override
@@ -357,16 +359,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=dog&act=changeDog&id="+pkgInfo.getId()+"&web_uid=" + ConstFile.uId;
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=dog&act=changeDog&id=" + pkgInfo.getId() + "&web_uid=" + ConstFile.uId;
                     String response = example.run(url);
-                    FrontDog dogs=FrontDog.objectFromData(response);
-                    if(1==dogs.getCode()){
-                        final FrontDog.UserDogBean dog=dogs.getUserDog();
+                    FrontDog dogs = FrontDog.objectFromData(response);
+                    if (1 == dogs.getCode()) {
+                        final FrontDog.UserDogBean dog = dogs.getUserDog();
                         //                    FrontDog.UserDogBean dog=FrontDog.UserDogBean.objectFromData(response)
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                setDog2Front(dog.getStep(),dog.getDogId());
+                                setDog2Front(dog.getStep(), dog.getDogId());
                             }
                         });
                     }
@@ -380,26 +382,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
     //设置用户形象到主台
-    private void setUserImg2Front(String imgStr){
+    private void setUserImg2Front(String imgStr) {
 
     }
 
 
     //获取朋友信息
-    private void getFrdInfo(final Friend frd){
+    private void getFrdInfo(final Friend frd) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=user&act=run&flag=1&web_uid=" + ConstFile.uId+"&ownerId="+frd.getUserId();
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=user&act=run&flag=1&web_uid=" + ConstFile.uId + "&ownerId=" + frd.getUserId();
                     String response = example.run(url);
-                    final FriendInfo friend= FriendInfo.objectFromData(response);
+                    final FriendInfo friend = FriendInfo.objectFromData(response);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setFrdInfo(friend,frd);
+                            setFrdInfo(friend, frd);
                         }
                     });
                 } catch (Exception e) {
@@ -410,10 +412,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     //设置朋友信息
-    private void setFrdInfo(FriendInfo friendInfo,Friend frd) {
-        if ((frd.getUserId()+"" ).equalsIgnoreCase(userBean.getUId())){
+    private void setFrdInfo(FriendInfo friendInfo, Friend frd) {
+        if ((frd.getUserId() + "").equalsIgnoreCase(userBean.getUId())) {
             frdArea.setVisibility(View.GONE);
-        }else {
+        } else {
             frdArea.setVisibility(View.VISIBLE);
         }
 
@@ -428,40 +430,39 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         int level = CharmUtil.expToGrade4Man(frd.getExp());
 //        frdLevel.setText(level+"");
-        int loc2=CharmUtil.gradeToExp4Man(level);
-        int loc1=CharmUtil.gradeToExp4Man(level + 1);
+        int loc2 = CharmUtil.gradeToExp4Man(level);
+        int loc1 = CharmUtil.gradeToExp4Man(level + 1);
         int _nextExp = frd.getExp() - loc2;
-        float per=(float) _nextExp / (loc1 - loc2);
-        int percent = (int)(per* 100);
+        float per = (float) _nextExp / (loc1 - loc2);
+        int percent = (int) (per * 100);
         int levelExp = loc1 - loc2;
         frdProgress.setProgress(percent);
-        frdProgressPer.setText(_nextExp+"/"+levelExp);
+        frdProgressPer.setText(_nextExp + "/" + levelExp);
 
 
-
-        int dogLevel=CharmUtil.toLevel(frd.getCharm());
+        int dogLevel = CharmUtil.toLevel(frd.getCharm());
 //        frdDogLevel.setText(dogLevel+"");
-        int dogCur=CharmUtil.currentLevelValue(frd.getCharm());
-        int dogNext=CharmUtil.needLevelValue(frd.getCharm());
+        int dogCur = CharmUtil.currentLevelValue(frd.getCharm());
+        int dogNext = CharmUtil.needLevelValue(frd.getCharm());
 //        int has=frd.getCharm()-dogCur;
 //        float p=has/(dogNext-dogCur);
-        float p=(float) dogCur/dogNext;
+        float p = (float) dogCur / dogNext;
 //        frdDogProgress.setProgress((int)(p*100));
-        frdDogProgress.setProgress((int)(p*100));
-        frdDogProgressPer.setText(dogCur+"/"+dogNext);
+        frdDogProgress.setProgress((int) (p * 100));
+        frdDogProgressPer.setText(dogCur + "/" + dogNext);
 
         //设置宠物
-        FriendInfo.DogBean dog=friendInfo.getDog();
-        int DogId=dog.getDogId();
-        int step=dog.getStep();
-        setDog2Front(step,DogId);
+        FriendInfo.DogBean dog = friendInfo.getDog();
+        int DogId = dog.getDogId();
+        int step = dog.getStep();
+        setDog2Front(step, DogId);
 
         //设置人物到前台
-        try{
-            String vImgStr=friendInfo.getVirtualimage();
-            String[] vImgArr=Utils.getQQShowData(vImgStr);
-            loadQQshowImg(vImgArr,moveUserImg);
-        }catch (Exception e){
+        try {
+            String vImgStr = friendInfo.getVirtualimage();
+            String[] vImgArr = Utils.getQQShowData(vImgStr);
+            loadQQshowImg(vImgArr, moveUserImg);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -622,31 +623,30 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-
     //////////抽奖
-    private void showLuckyDlg(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this,R.style.AlertDialogStyle);
+    private void showLuckyDlg() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
         final View dlgView = View
                 .inflate(this, R.layout.dlg_choujiang, null);
         builder.setView(dlgView);
         builder.setCancelable(false);
-        TextView leftTime= (TextView) dlgView
+        TextView leftTime = (TextView) dlgView
                 .findViewById(R.id.lucky_left_time);//设置标题
-        int value=Integer.valueOf(userBean.getLuckDraw());
-        leftTime.setText(userBean.getLuckDraw().equalsIgnoreCase("0")?"0":Math.abs(value)+"");
-        GridView luckyGridView= (GridView) dlgView.findViewById(R.id.lucky_gridView);
+        int value = Integer.valueOf(userBean.getLuckDraw());
+        leftTime.setText(userBean.getLuckDraw().equalsIgnoreCase("0") ? "0" : Math.abs(value) + "");
+        GridView luckyGridView = (GridView) dlgView.findViewById(R.id.lucky_gridView);
         //取消或确定按钮监听事件处理
         final AlertDialog dialog = builder.create();
         dialog.show();
 
         //设置背景透明
         WindowManager m = getWindowManager();
-        android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
-        p.height = Utils.dp2px(300,MainActivity.this);
-        p.width = Utils.dp2px(260,MainActivity.this);
+        WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+        p.height = Utils.dp2px(300, MainActivity.this);
+        p.width = Utils.dp2px(260, MainActivity.this);
         dialog.getWindow().setAttributes(p);//设置生效
 
-        ImageView closeBtn= (ImageView) dialog.findViewById(R.id.lucky_close);
+        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.lucky_close);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -654,8 +654,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
 
-        ArrayList<LuckyBean.ItemBean> luckyListRandom= LuckyUtil.getGiftArray();
-        luckyGridView.setAdapter(new AdapterLucky(this,luckyListRandom));
+        ArrayList<LuckyBean.ItemBean> luckyListRandom = LuckyUtil.getGiftArray();
+        luckyGridView.setAdapter(new AdapterLucky(this, luckyListRandom));
         luckyGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -668,7 +668,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
     //获取奖励信息
-    private void getLuckyInfo(final View dlgView){
+    private void getLuckyInfo(final View dlgView) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -677,15 +677,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 try {
                     String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=task&act=luckDraw&luckNumber=1&web_uid=" + ConstFile.uId;
                     String response = example.run(url);
-                    final LuckyBean luckyBean=LuckyBean.objectFromData(response);
+                    final LuckyBean luckyBean = LuckyBean.objectFromData(response);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            final RelativeLayout rl=dlgView.findViewById(R.id.lucky_msg_root);
+                            final RelativeLayout rl = dlgView.findViewById(R.id.lucky_msg_root);
                             rl.setVisibility(View.VISIBLE);
 
-                            ImageView imgView=dlgView.findViewById(R.id.lucky_msg_img);
-                            ImageView imgOkBtn= dlgView.findViewById(R.id.lucky_msg_ok);
+                            ImageView imgView = dlgView.findViewById(R.id.lucky_msg_img);
+                            ImageView imgOkBtn = dlgView.findViewById(R.id.lucky_msg_ok);
                             imgOkBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -694,16 +694,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             });
 
 
-                            if ((luckyBean==null)||(luckyBean.getCode()==0)){//无抽奖次数了
+                            if ((luckyBean == null) || (luckyBean.getCode() == 0)) {//无抽奖次数了
                                 imgView.setImageResource(R.drawable.time_over);
                                 AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
                                 animationDrawable.start();
-                            }else{
+                            } else {
                                 imgView.setImageResource(R.drawable.jianglishuoming);
                                 AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
                                 animationDrawable.start();
 
-                                TextView textView= (TextView) dlgView.findViewById(R.id.lucky_msg_text);
+                                TextView textView = (TextView) dlgView.findViewById(R.id.lucky_msg_text);
                                 textView.setText(luckyBean.getItem().getName());
                             }
                         }
@@ -715,4 +715,218 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }).start();
     }
 
+
+    //兑换
+    private void showDuiHuanDlg() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_jiangliduihuan, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        //取消或确定按钮监听事件处理
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+//        //设置背景透明
+//        WindowManager m = getWindowManager();
+//        android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+//        p.height = Utils.dp2px(300,MainActivity.this);
+//        p.width = Utils.dp2px(260,MainActivity.this);
+//        dialog.getWindow().setAttributes(p);//设置生效
+
+        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.lucky_close);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        final EditText edt = (EditText) dialog.findViewById(R.id.edt);
+
+        ImageView btn = (ImageView) dialog.findViewById(R.id.btn_duihuan);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String code = edt.getText().toString().trim();
+                if (code.length() == 0) {
+                    Toast.makeText(MainActivity.this, "请输入兑换码", Toast.LENGTH_SHORT).show();
+                } else {
+                    doDuiHuanExp(code, dialog);
+                }
+            }
+        });
+
+    }
+
+    private void doDuiHuanExp(final String code, final AlertDialog dlg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/move_interactive.php?mod=activation&act=exchange&activation=" + code + "&web_uid=" + ConstFile.uId;
+                    final String response = example.run(url);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if ((response == null) || (response.length() == 0)) {
+                                Toast.makeText(MainActivity.this, "兑换失败", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    JSONObject jsonObj = new JSONObject(response);
+                                    if (jsonObj.getInt("code") == 1) {
+                                        String string = "";
+                                        if (jsonObj.getInt("vip") == 1) {
+                                            string = (("恭喜你成功兑换了" + jsonObj.getString("desc") + "×4") + "！\n" + "您的宠物经验和英文币都增加了。\n" + "由于您是会员，奖励已经加成！");
+                                        } else {
+                                            string = (("恭喜你成功兑换了" + jsonObj.getString("desc") + "×2") + "！\n您的宠物经验和英文币都增加了。");
+                                        }
+                                        dlg.dismiss();
+                                        showDuiHuanOk(string);
+                                    } else {
+                                        Toast.makeText(MainActivity.this, jsonObj.getString("msg"), Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    Toast.makeText(MainActivity.this, "兑换失败", Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void showDuiHuanOk(String desc) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_duihuanok, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        //取消或确定按钮监听事件处理
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        TextView textView = dlgView.findViewById(R.id.desc);
+        textView.setText(desc);
+        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.ok);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+    }
+
+    @OnClick(R.id.btnvip)
+    public void onViewClicked() {
+        showDuiHuanVIPDlg();
+    }
+    //兑换VIP
+    private void showDuiHuanVIPDlg() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_vipduihuan, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        //取消或确定按钮监听事件处理
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+//        //设置背景透明
+//        WindowManager m = getWindowManager();
+//        android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+//        p.height = Utils.dp2px(300,MainActivity.this);
+//        p.width = Utils.dp2px(260,MainActivity.this);
+//        dialog.getWindow().setAttributes(p);//设置生效
+
+        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.lucky_close);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        final EditText edt = (EditText) dialog.findViewById(R.id.edt);
+
+        ImageView btn = (ImageView) dialog.findViewById(R.id.btn_duihuan);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String code = edt.getText().toString().trim();
+                if (code.length() == 0) {
+                    Toast.makeText(MainActivity.this, "请输入会员序列号", Toast.LENGTH_SHORT).show();
+                } else {
+                    doDuiHuanVIP(code, dialog);
+                }
+            }
+        });
+
+    }
+
+    private void doDuiHuanVIP(final String code, final AlertDialog dlg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/move_interactive.php?mod=activation&act=active_vip&activation=" + code + "&web_uid=" + ConstFile.uId;
+                    final String response = example.run(url);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if ((response == null) || (response.length() == 0)) {
+                                Toast.makeText(MainActivity.this, "兑换失败", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    JSONObject jsonObj = new JSONObject(response);
+                                    if (jsonObj.getInt("code")==-1){
+                                        String string=jsonObj.getString("msg");
+                                        Toast.makeText(MainActivity.this, string, Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        String string=jsonObj.getString("desc");
+                                        dlg.dismiss();
+                                        showDuiHuanVIPOk(string);
+                                    }
+
+                                } catch (JSONException e) {
+                                    Toast.makeText(MainActivity.this, "兑换失败", Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    private void showDuiHuanVIPOk(String desc) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_duihuanok, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        //取消或确定按钮监听事件处理
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        TextView textView = dlgView.findViewById(R.id.desc);
+        textView.setText(desc);
+        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.ok);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+    }
 }
