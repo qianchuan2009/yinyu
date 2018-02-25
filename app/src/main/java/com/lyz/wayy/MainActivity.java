@@ -692,9 +692,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                     rl.setVisibility(View.GONE);
                                 }
                             });
-
+                            TextView textView = (TextView) dlgView.findViewById(R.id.lucky_msg_text);
 
                             if ((luckyBean == null) || (luckyBean.getCode() == 0)) {//无抽奖次数了
+                                textView.setVisibility(View.GONE);
                                 imgView.setImageResource(R.drawable.time_over);
                                 AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
                                 animationDrawable.start();
@@ -702,10 +703,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 imgView.setImageResource(R.drawable.jianglishuoming);
                                 AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
                                 animationDrawable.start();
-
-                                TextView textView = (TextView) dlgView.findViewById(R.id.lucky_msg_text);
-                                textView.setText(luckyBean.getItem().getName());
+                                textView.setVisibility(View.VISIBLE);
+                                String str="恭喜你获得"+luckyBean.getItem().getENum()+"个"+luckyBean.getItem().getName();
+                                textView.setText(str);
                             }
+
                         }
                     });
                 } catch (Exception e) {
