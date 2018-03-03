@@ -72,7 +72,7 @@ public class AdapterPkg extends RecyclerView.Adapter {
             viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.myClick(pkg,num);
+                listener.myClick(pkg,num);
                 }
             });
         }

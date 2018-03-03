@@ -7,4 +7,9 @@
     <color name="nav_bar">#339EE2</color>
     <color name="red">#ff0000</color>
     <color name="balck">#000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="frd_1">#F6C3c2</color>
+    <color name="frd_2">#FAD952</color>
+    <color name="frd_3">#B8Dc6f</color>
 </resources>

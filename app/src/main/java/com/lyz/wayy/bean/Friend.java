@@ -29,6 +29,9 @@ public class Friend implements Serializable {
     private String headPic;
     private int exp;
     private int charm;
+    private boolean isSelected=false;
+
+
 
     public static Friend objectFromData(String str, String key) {
 
@@ -100,4 +103,12 @@ public class Friend implements Serializable {
     public void setCharm(int charm) {
         this.charm = charm;
     }
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
 }

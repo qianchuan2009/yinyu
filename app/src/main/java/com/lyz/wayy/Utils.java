@@ -3,6 +3,8 @@ package com.lyz.wayy;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -95,6 +97,28 @@ public class Utils {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isConnectedOrConnecting();
+    }
+
+
+    /**
+     * 获取版本号
+     *
+     * @param context
+     * @return
+     */
+    public static String getAppVersion(Context context) {
+        String versionName = "";
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            versionName = pi.versionName;
+            if (versionName == null || versionName.length() <= 0) {
+                return "9.9.9";
+            }
+        } catch (Exception e) {
+            return "9.9.9";
+        }
+        return versionName;
     }
 
     /**
@@ -363,4 +387,77 @@ public class Utils {
         }
         return null;
     }
+
+
+
+    /**
+     * 返回 1表示version1>version2 ;返回0表示version1=version2 ;返回-1表示version1<version2
+     *
+     * @param version1
+     * @param version2
+     * @return
+     */
+    public static int compareVersion(String version1, String version2) {
+        int[] arr1 = getVersionIntArr(version1);
+        int[] arr2 = getVersionIntArr(version2);
+        if (arr1 == null) {
+            if (arr2 == null) {
+                return 0;
+            } else {
+                return -1;
+            }
+        } else if (arr2 == null) {
+            return 1;
+        } else {
+            int maxLen = Math.max(arr1.length, arr2.length);
+            for (int i = 0; i < maxLen; i++) {
+                if (i >= arr1.length)
+                    return -1;
+                if (i >= arr2.length)
+                    return 1;
+                // 当前位都存在 比较大小
+                if (arr1[i] > arr2[i]) {
+                    return 1;
+                } else if (arr1[i] < arr2[i]) {
+                    return -1;
+                } else {
+                    // 相等
+                }
+            }
+            // 比较完了函数没退出 那就是所有位都相等
+            return 0;
+        }
+    }
+
+    /**
+     * 获得版本对应的数组，如10.2.3 返回 [10,2,3]
+     *
+     * @param version
+     * @return
+     */
+    private static int[] getVersionIntArr(String version) {
+        if ((version == null) || (version.length() == 0))
+            return null;
+        String[] arr = version.split("\\.");
+        int[] intArr = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            intArr[i] = str2int(arr[i], 0);
+        }
+        return intArr;
+    }
+
+    /**
+     * 如果非数字就返回 默认值
+     *
+     * @param str
+     * @return
+     */
+    private static int str2int(String str, int def) {
+        try {
+            return Integer.parseInt(str);
+        } catch (Exception e) {
+            return def;
+        }
+    }
+
 }

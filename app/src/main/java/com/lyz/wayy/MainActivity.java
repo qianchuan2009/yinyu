@@ -1,11 +1,13 @@
 package com.lyz.wayy;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +36,7 @@ import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.bean.FriendInfo;
 import com.lyz.wayy.bean.FrontDog;
 import com.lyz.wayy.bean.PkgInfo;
+import com.lyz.wayy.bean.UpdateBean;
 import com.lyz.wayy.lucky.AdapterLucky;
 import com.lyz.wayy.lucky.LuckyBean;
 import com.lyz.wayy.lucky.LuckyUtil;
@@ -131,6 +134,57 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         onCreate2();
         getUserInfo();
         getGongGao();
+        checkUpdate();
+    }
+
+    private void checkUpdate(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=version&act=check&web_uid=" + ConstFile.uId;
+                    String response = example.run(url);
+                    final UpdateBean updateBean=UpdateBean.objectFromData(response);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                           String ver= Utils.getAppVersion(MainActivity.this);
+                            int cp=Utils.compareVersion(ver,updateBean.getVer());
+                            if(cp==-1){
+                                if (updateBean.getEnforce()==1){
+                                    Utils.showOkAlertDialog(MainActivity.this, "提示", "检测到新版本请立刻更新！", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            doUpdate(updateBean.getUrl());
+                                        }
+                                    });
+                                }else{
+                                    Utils.showAlertDialog(MainActivity.this, "提示", "检测到新版本是否立刻更新？", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            doUpdate(updateBean.getUrl());
+                                        }
+                                    });
+                                }
+
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private  void doUpdate(String url){
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+        finish();
+        System.exit(0);
     }
 
 
@@ -189,11 +243,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         myDogLevel.setText(dogLevel + "");
         int dogCur = CharmUtil.currentLevelValue(userBean.getCharm());
         int dogNext = CharmUtil.needLevelValue(userBean.getCharm());
-        int has = userBean.getCharm() - dogCur;
-        float p = has / (dogNext - dogCur);
+//        int has = userBean.getCharm() - dogCur;
+//        float p = has / (dogNext - dogCur);
+        float p = (float) dogCur / (dogNext - dogCur);
         myDogProgress.setProgress((int) (p * 100));
-        myDogProgressPer.setText(has + "/" + dogNext);
-
+//        myDogProgressPer.setText(has + "/" + dogNext);
+        myDogProgressPer.setText(dogCur + "/" + dogNext);
 
         //设置宠物
 
@@ -276,8 +331,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         } else {
 
-            params.width = Utils.dp2px(100, this);
-            params.height = Utils.dp2px(100, this);
+            params.width = Utils.dp2px(60, this);
+            params.height = Utils.dp2px(60, this);
             moveImg.setLayoutParams(params);
 
             int id = getResources().getIdentifier("animal" + DogId + "_0" + step, "drawable", getPackageName());
@@ -320,6 +375,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                         @Override
                         public void run() {
                             gonggao.setText(notice);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gonggao.setVisibility(View.GONE);
+                                }
+                            }, 80000); //延时1s执行
                         }
                     });
                 } catch (Exception e) {
@@ -706,6 +767,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 textView.setVisibility(View.VISIBLE);
                                 String str="恭喜你获得"+luckyBean.getItem().getENum()+"个"+luckyBean.getItem().getName();
                                 textView.setText(str);
+
+                                TextView leftTime = (TextView) dlgView
+                                        .findViewById(R.id.lucky_left_time);//设置标题
+
+                                String left=leftTime.getText().toString();
+                                int lefttimes=Integer.parseInt(left)-1;
+                                leftTime.setText(lefttimes+"");
+                                getUserInfo();
                             }
 
                         }
@@ -787,6 +856,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                         }
                                         dlg.dismiss();
                                         showDuiHuanOk(string);
+                                        getUserInfo();
                                     } else {
                                         Toast.makeText(MainActivity.this, jsonObj.getString("msg"), Toast.LENGTH_SHORT).show();
                                     }

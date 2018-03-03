@@ -2,6 +2,7 @@ package com.lyz.wayy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,13 +31,21 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acticity_login);
         ButterKnife.bind(this);
-        login();
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences("mypw", MODE_PRIVATE);
+        String name=sharedPreferences.getString("name","");
+        String pwStr=sharedPreferences.getString("pw","");
+       if(name.length()>0){
+           userName.setText(name);
+           Pw.setText(pwStr);
+           login();
+       }
     }
 
 
     private void login() {
         final  String name=userName.getText().toString();
-        final String pw=Pw.getText().toString();
+        final String pwStr=Pw.getText().toString();
 
         new Thread(new Runnable() {
             @Override
@@ -44,7 +53,7 @@ public class LoginActivity extends Activity {
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url=ConstFile.serverUrl+"index2.php?username="+name.trim()+"&password="+pw.trim();
+                    String url=ConstFile.serverUrl+"index2.php?username="+name.trim()+"&password="+pwStr.trim();
                     String response = example.run(url);
                     JSONObject jObj = new JSONObject(response);
                     String type = jObj.getString("code");
@@ -58,6 +67,16 @@ public class LoginActivity extends Activity {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.putExtra("uid", uid);
                                 startActivity(intent);
+
+                                SharedPreferences sharedPreferences = getSharedPreferences("mypw", MODE_PRIVATE);
+
+                                //得到SharedPreferences.Editor对象，并保存数据到该对象中
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("name", name.trim());
+                                editor.putString("pw", pwStr.trim());
+                                //保存key-value对到文件中
+                                editor.commit();
+
                                 finish();
                             }
                         });
