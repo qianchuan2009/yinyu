@@ -2,35 +2,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="80dp"
-    android:layout_height="match_parent">
+    android:layout_height="80dp">
     <RelativeLayout
-
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="1dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
         android:layout_marginRight="5dp"
-        android:background="@mipmap/headpic2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        >
         <ImageView
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
             android:id="@+id/adapter_img"
-            android:layout_marginRight="5dp"
-            android:layout_centerInParent="true"
-            android:layout_width="70dp"
-            android:layout_height="70dp" />
+            android:layout_marginRight="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/lucky_card_icon" />
+        <RelativeLayout
+            android:id="@+id/select_bg"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@mipmap/headpic3"
+            />
 
         <TextView
             android:id="@+id/pkg_text"
-            android:layout_width="70dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="6dp"
             android:text="已使用"
             android:textAlignment="center"
             android:textColor="#3296fa"
             android:textStyle="bold" />
+
     </RelativeLayout>
+
+    </RelativeLayout>
+
 
 </LinearLayout>

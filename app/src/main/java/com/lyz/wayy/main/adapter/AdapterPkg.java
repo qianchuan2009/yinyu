@@ -49,11 +49,11 @@ public class AdapterPkg extends RecyclerView.Adapter {
 
     private class ViewHolder extends  RecyclerView.ViewHolder{
         private ImageView imageView;
-//        private TextView textView;
+        private TextView textView;
         public ViewHolder(View view){
             super(view);
             imageView=(ImageView)view.findViewById(R.id.adapter_img);
-//            textView=(TextView)view.findViewById(R.id.adapter2_txt);
+            textView=(TextView)view.findViewById(R.id.pkg_text);
         }
     }
     @Override
@@ -66,13 +66,28 @@ public class AdapterPkg extends RecyclerView.Adapter {
 //        Glide.with(context).load(url).into(viewHolder.imageView);
         int id = context.getResources().getIdentifier("animal"+pkg.getDogId()+"_04_0001", "drawable", context.getPackageName());
         viewHolder.imageView.setImageResource(id);
+        if (pkg.getStatus()==1){
+            viewHolder.textView.setVisibility(View.VISIBLE);
+        }else{
+            viewHolder.textView.setVisibility(View.GONE);
+        }
+
 
         final int num=position;
         if (listener!=null){
+            final AdapterPkg self=this;
             viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                for (PkgInfo pp:list) {
+                    if (pp.getStatus()==1){
+                        pp.setStatus(0);
+                    }
+                }
+                pkg.setStatus(1);
+
                 listener.myClick(pkg,num);
+                    self.notifyDataSetChanged();
                 }
             });
         }

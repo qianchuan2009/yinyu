@@ -5,7 +5,7 @@
     android:layout_height="80dp">
     <RelativeLayout
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="1dp"
         android:orientation="vertical"
         android:layout_gravity="center"
         android:layout_marginRight="5dp"
@@ -13,8 +13,8 @@
         android:layout_height="match_parent">
         <RelativeLayout
             android:id="@+id/mm_ll"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             >
@@ -24,14 +24,14 @@
                 android:layout_marginLeft="1dp"
                 android:layout_marginBottom="1dp"
                 android:layout_marginTop="1dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/lucky_card_icon" />
             <RelativeLayout
                 android:id="@+id/select_bg"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:background="@mipmap/headpic3"
                 />
 
@@ -56,7 +56,7 @@
             android:textSize="16sp"
             android:layout_width="20dp"
             android:textAlignment="center"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="1dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_height="wrap_content" />

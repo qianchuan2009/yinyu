@@ -43,6 +43,7 @@ import com.lyz.wayy.lucky.LuckyUtil;
 import com.lyz.wayy.main.frame.FragmentFriend;
 import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.pet.BuyDogActicity;
+import com.lyz.wayy.pub.TextViewWithFont;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     @BindView(R.id.move_user_img)
     GifImageView moveUserImg;
+    @BindView(R.id.frd_level)
+    TextViewWithFont frdLevel;
+    @BindView(R.id.frd_dog_level)
+    TextViewWithFont frdDogLevel;
 
     private ImageView imageView;//点击出现下方区域的图片
     private RadioGroup radioGroup;//下方tab页
@@ -137,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         checkUpdate();
     }
 
-    private void checkUpdate(){
+    private void checkUpdate() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -146,21 +151,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 try {
                     String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=version&act=check&web_uid=" + ConstFile.uId;
                     String response = example.run(url);
-                    final UpdateBean updateBean=UpdateBean.objectFromData(response);
+                    final UpdateBean updateBean = UpdateBean.objectFromData(response);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                           String ver= Utils.getAppVersion(MainActivity.this);
-                            int cp=Utils.compareVersion(ver,updateBean.getVer());
-                            if(cp==-1){
-                                if (updateBean.getEnforce()==1){
+                            String ver = Utils.getAppVersion(MainActivity.this);
+                            int cp = Utils.compareVersion(ver, updateBean.getVer());
+                            if (cp == -1) {
+                                if (updateBean.getEnforce() == 1) {
                                     Utils.showOkAlertDialog(MainActivity.this, "提示", "检测到新版本请立刻更新！", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             doUpdate(updateBean.getUrl());
                                         }
                                     });
-                                }else{
+                                } else {
                                     Utils.showAlertDialog(MainActivity.this, "提示", "检测到新版本是否立刻更新？", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -179,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }).start();
     }
 
-    private  void doUpdate(String url){
+    private void doUpdate(String url) {
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
@@ -490,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         Glide.with(context).load(frd.getHeadPic()).into(frdImg);
 
         int level = CharmUtil.expToGrade4Man(frd.getExp());
-//        frdLevel.setText(level+"");
+        frdLevel.setText(level+"");
         int loc2 = CharmUtil.gradeToExp4Man(level);
         int loc1 = CharmUtil.gradeToExp4Man(level + 1);
         int _nextExp = frd.getExp() - loc2;
@@ -502,7 +507,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
         int dogLevel = CharmUtil.toLevel(frd.getCharm());
-//        frdDogLevel.setText(dogLevel+"");
+        frdDogLevel.setText(dogLevel+"");
         int dogCur = CharmUtil.currentLevelValue(frd.getCharm());
         int dogNext = CharmUtil.needLevelValue(frd.getCharm());
 //        int has=frd.getCharm()-dogCur;
@@ -765,15 +770,15 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                                 AnimationDrawable animationDrawable = (AnimationDrawable) imgView.getDrawable();
                                 animationDrawable.start();
                                 textView.setVisibility(View.VISIBLE);
-                                String str="恭喜你获得"+luckyBean.getItem().getENum()+"个"+luckyBean.getItem().getName();
+                                String str = "恭喜你获得" + luckyBean.getItem().getENum() + "个" + luckyBean.getItem().getName();
                                 textView.setText(str);
 
                                 TextView leftTime = (TextView) dlgView
                                         .findViewById(R.id.lucky_left_time);//设置标题
 
-                                String left=leftTime.getText().toString();
-                                int lefttimes=Integer.parseInt(left)-1;
-                                leftTime.setText(lefttimes+"");
+                                String left = leftTime.getText().toString();
+                                int lefttimes = Integer.parseInt(left) - 1;
+                                leftTime.setText(lefttimes + "");
                                 getUserInfo();
                             }
 
@@ -899,6 +904,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     public void onViewClicked() {
         showDuiHuanVIPDlg();
     }
+
     //兑换VIP
     private void showDuiHuanVIPDlg() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
@@ -959,11 +965,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                             } else {
                                 try {
                                     JSONObject jsonObj = new JSONObject(response);
-                                    if (jsonObj.getInt("code")==-1){
-                                        String string=jsonObj.getString("msg");
+                                    if (jsonObj.getInt("code") == -1) {
+                                        String string = jsonObj.getString("msg");
                                         Toast.makeText(MainActivity.this, string, Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        String string=jsonObj.getString("desc");
+                                    } else {
+                                        String string = jsonObj.getString("desc");
                                         dlg.dismiss();
                                         showDuiHuanVIPOk(string);
                                     }
@@ -981,6 +987,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         }).start();
     }
+
     private void showDuiHuanVIPOk(String desc) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
         final View dlgView = View
