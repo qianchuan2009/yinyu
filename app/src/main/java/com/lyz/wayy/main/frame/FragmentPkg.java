@@ -12,10 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.lyz.wayy.ConstFile;
+import com.lyz.wayy.pub.ConstFile;
 import com.lyz.wayy.MainActivity;
 import com.lyz.wayy.R;
-import com.lyz.wayy.Utils;
+import com.lyz.wayy.pub.Utils;
 import com.lyz.wayy.bean.PkgInfo;
 import com.lyz.wayy.main.adapter.AdapterPkg;
 

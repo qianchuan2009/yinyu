@@ -396,6 +396,24 @@
                         android:textColor="#fff"
                         android:textSize="10sp" />
                 </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/goldstar" />
+
+                    <com.lyz.wayy.pub.TextViewWithFont
+                        android:id="@+id/frdstar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="6dp"
+                        android:text="1999"
+                        android:textColor="#fff"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -458,6 +476,15 @@
                     android:layout_height="40dp"
                     android:button="@null"
                     android:background="@drawable/petbutoon"
+                    android:gravity="center" />
+                <RadioButton
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/tab5"
+                    android:text=""
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:button="@null"
+                    android:background="@drawable/sitemessage"
                     android:gravity="center" />
             </RadioGroup>
             <FrameLayout

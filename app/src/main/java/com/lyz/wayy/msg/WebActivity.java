@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lyz.wayy.R;
-import com.lyz.wayy.Utils;
+import com.lyz.wayy.pub.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -12,14 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.lyz.wayy.ConstFile;
+import com.lyz.wayy.pub.ConstFile;
 import com.lyz.wayy.MainActivity;
 import com.lyz.wayy.R;
-import com.lyz.wayy.Utils;
+import com.lyz.wayy.pub.Utils;
 import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.main.adapter.AdapterFriend;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -85,6 +87,8 @@ public class FragmentFriend extends Fragment {
                     String response = example.run(url);
 //                    JSONArray arr=new JSONArray(response);
                     dataList= Friend.arrayFriendFromData(response);
+                    Comparator<Friend> com=new FriendComparator(false);
+                    Collections.sort(dataList, com);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

@@ -8,14 +8,9 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.lyz.wayy.msg.WebActivity;
+import com.lyz.wayy.pub.Utils;
 
 import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 
 /**

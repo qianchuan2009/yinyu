@@ -32,18 +32,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.lyz.wayy.bean.BuyDog;
 import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.bean.FriendInfo;
 import com.lyz.wayy.bean.FrontDog;
+import com.lyz.wayy.bean.Letter;
 import com.lyz.wayy.bean.PkgInfo;
 import com.lyz.wayy.bean.UpdateBean;
+import com.lyz.wayy.bean.UserInfo;
 import com.lyz.wayy.lucky.AdapterLucky;
 import com.lyz.wayy.lucky.LuckyBean;
 import com.lyz.wayy.lucky.LuckyUtil;
+import com.lyz.wayy.main.adapter.AdapterLetter;
 import com.lyz.wayy.main.frame.FragmentFriend;
 import com.lyz.wayy.main.frame.FragmentPkg;
 import com.lyz.wayy.pet.BuyDogActicity;
+import com.lyz.wayy.pub.ConstFile;
 import com.lyz.wayy.pub.TextViewWithFont;
+import com.lyz.wayy.pub.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -116,6 +122,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     TextViewWithFont frdLevel;
     @BindView(R.id.frd_dog_level)
     TextViewWithFont frdDogLevel;
+    @BindView(R.id.frdstar)
+    TextViewWithFont frdstar;
 
     private ImageView imageView;//点击出现下方区域的图片
     private RadioGroup radioGroup;//下方tab页
@@ -130,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     String userJsonStr;
     UserInfo.UserBean userBean;//用户信息
+    private ArrayList<Letter> letterDataList=new ArrayList<Letter>();
+    private AdapterLetter adapterLetter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -494,8 +504,10 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         frdName.setText(frd.getUserName());
         Glide.with(context).load(frd.getHeadPic()).into(frdImg);
 
+        frdstar.setText(friendInfo.getMoney()+"");
+
         int level = CharmUtil.expToGrade4Man(frd.getExp());
-        frdLevel.setText(level+"");
+        frdLevel.setText(level + "");
         int loc2 = CharmUtil.gradeToExp4Man(level);
         int loc1 = CharmUtil.gradeToExp4Man(level + 1);
         int _nextExp = frd.getExp() - loc2;
@@ -507,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
 
         int dogLevel = CharmUtil.toLevel(frd.getCharm());
-        frdDogLevel.setText(dogLevel+"");
+        frdDogLevel.setText(dogLevel + "");
         int dogCur = CharmUtil.currentLevelValue(frd.getCharm());
         int dogNext = CharmUtil.needLevelValue(frd.getCharm());
 //        int has=frd.getCharm()-dogCur;
@@ -555,11 +567,80 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     intent.putExtra("fb", userBean.getFB());
                     startActivity(intent);
                     break;
+                case R.id.tab5:
+                    showLetterDlg();
+                    break;
                 default:
                     break;
             }
         }
     };
+
+
+    //邮件
+    private void showLetterDlg() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_letter, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        //取消或确定按钮监听事件处理
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.lucky_close);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        //设置背景透明
+        WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+        p.height = Utils.dp2px(280, MainActivity.this);
+        p.width = Utils.dp2px(360, MainActivity.this);
+        dialog.getWindow().setAttributes(p);//设置生效
+
+        final GridView gridView = (GridView) dialog.findViewById(R.id.letter_gridview);
+
+        getLeterList();
+         adapterLetter=new AdapterLetter(this,letterDataList);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Letter buyDog=letterDataList.get(i);
+//                showBuyDogDlg(buyDog);
+            }
+        });
+        gridView.setAdapter(adapterLetter);
+    }
+
+    private void getLeterList(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=message&act=getList&web_uid=" +ConstFile.uId;
+                    String response = example.run(url);
+//                    JSONArray arr=new JSONArray(response);
+                    letterDataList= Letter.arrayLetterFromData(response,"3");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapterLetter.reSetDatalist(letterDataList);
+                            adapterLetter.notifyDataSetChanged();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     private void change1() {
         radioButton1.setPressed(true);

@@ -12,7 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lyz.wayy.R;
-import com.lyz.wayy.Utils;
+import com.lyz.wayy.pub.Utils;
 import com.lyz.wayy.main.WebActivity2;
 
 import java.util.ArrayList;

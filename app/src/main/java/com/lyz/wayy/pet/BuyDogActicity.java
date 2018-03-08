@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
@@ -21,15 +20,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lyz.wayy.ConstFile;
-import com.lyz.wayy.MainActivity;
+import com.lyz.wayy.pub.ConstFile;
 import com.lyz.wayy.R;
-import com.lyz.wayy.Utils;
+import com.lyz.wayy.pub.Utils;
 import com.lyz.wayy.bean.BuyDog;
 import com.lyz.wayy.bean.PkgInfo;
-import com.lyz.wayy.lucky.AdapterLucky;
-import com.lyz.wayy.lucky.LuckyBean;
-import com.lyz.wayy.lucky.LuckyUtil;
 import com.lyz.wayy.main.frame.FragmentPkg;
 
 import org.json.JSONException;

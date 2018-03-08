@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.lyz.wayy.pub.ConstFile;
+import com.lyz.wayy.pub.Utils;
+
 import org.json.JSONObject;
 
 import butterknife.BindView;
@@ -53,7 +56,7 @@ public class LoginActivity extends Activity {
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url=ConstFile.serverUrl+"index2.php?username="+name.trim()+"&password="+pwStr.trim();
+                    String url= ConstFile.serverUrl+"index2.php?username="+name.trim()+"&password="+pwStr.trim();
                     String response = example.run(url);
                     JSONObject jObj = new JSONObject(response);
                     String type = jObj.getString("code");
