@@ -29,11 +29,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * 设置页面
- *
- * @author zengxl 2015-9-22
- */
 public class MainFragment extends Fragment {
 
     private Context context;// 本类环境

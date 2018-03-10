@@ -26,11 +26,6 @@ import org.jsoup.select.Elements;
 import java.net.URL;
 import java.util.ArrayList;
 
-/**
- * 设置页面
- *
- * @author zengxl 2015-9-22
- */
 public class MsgFragment extends Fragment {
 
     private Context context;// 本类环境

@@ -17,7 +17,7 @@
             android:id="@+id/lucky_left_time"
             android:text="收件箱"
             android:textColor="#4093eb"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textAlignment="center"
             android:layout_centerVertical="true"
             android:layout_height="wrap_content" />
@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:layout_margin="4dp"
         android:layout_below="@id/top_nav"
-        android:visibility="gone"
+        android:visibility="visible"
         >
         <GridView
             android:layout_marginTop="4dp"
@@ -56,6 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
+        android:visibility="gone"
         >
         <RelativeLayout
             android:id="@+id/top_nav2"
@@ -69,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:text="消息"
                 android:textColor="#4093eb"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textAlignment="center"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content" />
@@ -102,7 +103,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:scaleType="fitXY"
-                        android:src="@drawable/lucky_card_icon" />
+                        />
                     <RelativeLayout
                         android:layout_width="52dp"
                         android:layout_height="51dp"
@@ -111,39 +112,40 @@
                 </RelativeLayout>
 
                 <TextView
-                    android:id="@+id/text1"
+                    android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:paddingTop="5dp"
                     android:text="张三"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
                 <ImageView
-                    android:id="@+id/btnchoujiang"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:id="@+id/replay"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
                     android:layout_gravity="center"
                     android:paddingTop="5dp"
                     android:src="@drawable/return1" />
 
                 <RelativeLayout
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="8dp"
                     android:layout_width="40dp"
-                    android:layout_height="16dp"
+                    android:layout_height="22dp"
                     android:layout_gravity="center_horizontal"
+                    android:id="@+id/del_rl"
                     >
                     <TextView
                         android:id="@+id/del"
                         android:layout_width="40dp"
-                        android:layout_height="16dp"
+                        android:layout_height="wrap_content"
                         android:textAlignment="center"
                         android:background="@mipmap/headpic3"
                         android:text="删除"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
                     <RelativeLayout
                         android:layout_width="42dp"
-                        android:layout_height="18dp"
+                        android:layout_height="22dp"
                         android:background="@mipmap/headpic3"
                         />
                 </RelativeLayout>
@@ -153,16 +155,26 @@
             <RelativeLayout
                 android:layout_toRightOf="@id/l1"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="80dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <EditText
-                    android:id="@+id/edt_show1"
+                    android:visibility="gone"
+                    android:id="@+id/edt"
+                    android:inputType="textMultiLine"
                     android:layout_width="match_parent"
                     android:background="@drawable/letter_bg"
+                    android:textSize="16sp"
                     android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/edt_showmsg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/letter_bg"
+                    android:text=""
+                    android:textSize="16sp" />
             </RelativeLayout>
             <ImageView
                 android:id="@+id/img_ok"
@@ -173,11 +185,38 @@
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
                 android:src="@drawable/ok3" />
+
+            <RelativeLayout
+                android:id="@+id/bottom_rl"
+                android:layout_height="44dp"
+                android:layout_marginBottom="23dp"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                >
+                <ImageView
+                    android:id="@+id/img_ok2"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="70dp"
+                    android:scaleType="fitXY"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentBottom="true"
+                    android:src="@drawable/ok3" />
+                <ImageView
+                    android:id="@+id/img_cancel2"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="130dp"
+                    android:scaleType="fitXY"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentBottom="true"
+                    android:src="@drawable/cancel1" />
+            </RelativeLayout>
+
         </RelativeLayout>
 
     </RelativeLayout>
-
-
 
 
 </RelativeLayout>

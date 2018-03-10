@@ -37,6 +37,8 @@ import com.lyz.wayy.bean.Friend;
 import com.lyz.wayy.bean.FriendInfo;
 import com.lyz.wayy.bean.FrontDog;
 import com.lyz.wayy.bean.Letter;
+import com.lyz.wayy.bean.LetterRrecive;
+import com.lyz.wayy.bean.LetterSendResult;
 import com.lyz.wayy.bean.PkgInfo;
 import com.lyz.wayy.bean.UpdateBean;
 import com.lyz.wayy.bean.UserInfo;
@@ -46,6 +48,7 @@ import com.lyz.wayy.lucky.LuckyUtil;
 import com.lyz.wayy.main.adapter.AdapterLetter;
 import com.lyz.wayy.main.frame.FragmentFriend;
 import com.lyz.wayy.main.frame.FragmentPkg;
+import com.lyz.wayy.main.frame.FriendComparator;
 import com.lyz.wayy.pet.BuyDogActicity;
 import com.lyz.wayy.pub.ConstFile;
 import com.lyz.wayy.pub.TextViewWithFont;
@@ -56,6 +59,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -359,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-    @OnClick({R.id.btnchoujiang, R.id.duihua})
+    @OnClick({R.id.btnchoujiang, R.id.duihua,R.id.frd_msg,R.id.tab3,R.id.tab4,R.id.tab5})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnchoujiang:
@@ -370,6 +376,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
             case R.id.frd_msg:
 
+                break;
+            case R.id.tab4:
+                //打开宠物购买
+                Intent intent = new Intent(MainActivity.this, BuyDogActicity.class);
+                intent.putExtra("star", userBean.getMoney());
+                intent.putExtra("fb", userBean.getFB());
+                startActivity(intent);
+                break;
+            case R.id.tab5:
+                showLetterDlg();
                 break;
         }
     }
@@ -543,8 +559,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     RadioGroup.OnCheckedChangeListener checkedchangelistner = new RadioGroup.OnCheckedChangeListener() {
@@ -560,87 +574,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 case R.id.tab3:
                     //显示当前的人物状态
                     break;
-                case R.id.tab4:
-                    //打开宠物购买
-                    Intent intent = new Intent(MainActivity.this, BuyDogActicity.class);
-                    intent.putExtra("star", userBean.getMoney());
-                    intent.putExtra("fb", userBean.getFB());
-                    startActivity(intent);
-                    break;
-                case R.id.tab5:
-                    showLetterDlg();
-                    break;
                 default:
                     break;
             }
         }
     };
 
-
-    //邮件
-    private void showLetterDlg() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
-        final View dlgView = View
-                .inflate(this, R.layout.dlg_letter, null);
-        builder.setView(dlgView);
-        builder.setCancelable(false);
-        //取消或确定按钮监听事件处理
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-
-        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.lucky_close);
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-
-        //设置背景透明
-        WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
-        p.height = Utils.dp2px(280, MainActivity.this);
-        p.width = Utils.dp2px(360, MainActivity.this);
-        dialog.getWindow().setAttributes(p);//设置生效
-
-        final GridView gridView = (GridView) dialog.findViewById(R.id.letter_gridview);
-
-        getLeterList();
-         adapterLetter=new AdapterLetter(this,letterDataList);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Letter buyDog=letterDataList.get(i);
-//                showBuyDogDlg(buyDog);
-            }
-        });
-        gridView.setAdapter(adapterLetter);
-    }
-
-    private void getLeterList(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean result = false;
-                Utils.OkHttps example = new Utils.OkHttps();
-                try {
-                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=message&act=getList&web_uid=" +ConstFile.uId;
-                    String response = example.run(url);
-//                    JSONArray arr=new JSONArray(response);
-                    letterDataList= Letter.arrayLetterFromData(response,"3");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapterLetter.reSetDatalist(letterDataList);
-                            adapterLetter.notifyDataSetChanged();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
 
     private void change1() {
         radioButton1.setPressed(true);
@@ -1088,5 +1027,237 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
 
+    }
+
+
+
+
+    //////////////////////////////////
+
+    //邮件
+    private void showLetterDlg() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_letter, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        //取消或确定按钮监听事件处理
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.lucky_close);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        //设置背景透明
+        WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+        p.height = Utils.dp2px(280, MainActivity.this);
+        p.width = Utils.dp2px(360, MainActivity.this);
+        dialog.getWindow().setAttributes(p);//设置生效
+
+        final GridView gridView = (GridView) dialog.findViewById(R.id.letter_gridview);
+
+        getLeterList();
+        adapterLetter=new AdapterLetter(this,letterDataList);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Letter buyDog=letterDataList.get(i);
+                showLetter(buyDog, dialog);
+            }
+        });
+        gridView.setAdapter(adapterLetter);
+    }
+
+    private void getLeterList(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=message&act=getList&web_uid=" +ConstFile.uId;
+                    String response = example.run(url);
+//                    JSONArray arr=new JSONArray(response);
+                    letterDataList= Letter.arrayLetterFromData(response,"3");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapterLetter.reSetDatalist(letterDataList);
+                            adapterLetter.notifyDataSetChanged();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void showLetter(final Letter letter, final AlertDialog dialog){
+        final RelativeLayout title1= (RelativeLayout) dialog.findViewById(R.id.top_nav); //111
+        final RelativeLayout body1= (RelativeLayout) dialog.findViewById(R.id.luck_main_body);//111
+        title1.setVisibility(View.GONE);
+        body1.setVisibility(View.GONE);
+
+        final RelativeLayout body2= (RelativeLayout) dialog.findViewById(R.id.msg_main_body);//222
+        body2.setVisibility(View.VISIBLE);
+
+        final TextView deltv= (TextView) dialog.findViewById(R.id.del);
+        deltv.setVisibility(View.VISIBLE);
+
+        final TextView msgTv= (TextView) dialog.findViewById(R.id.edt_showmsg);
+        msgTv.setVisibility(View.VISIBLE);
+
+        final EditText msgTv2= (EditText) dialog.findViewById(R.id.edt);
+        msgTv2.setVisibility(View.GONE);
+
+        final RelativeLayout bottomRl= (RelativeLayout) dialog.findViewById(R.id.bottom_rl);
+        bottomRl.setVisibility(View.GONE);
+
+        final ImageView okBtn= (ImageView) dialog.findViewById(R.id.img_ok);
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                title1.setVisibility(View.VISIBLE);
+                body1.setVisibility(View.VISIBLE);
+                body2.setVisibility(View.GONE);
+            }
+        });
+        final RelativeLayout del_rl = (RelativeLayout) dialog.findViewById(R.id.del_rl);
+        final ImageView btnReplay= (ImageView) dialog.findViewById(R.id.replay);
+        btnReplay.setVisibility(View.VISIBLE);
+        btnReplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                msgTv2.setText("");
+                msgTv2.setVisibility(View.VISIBLE);
+                msgTv.setVisibility(View.GONE);
+                del_rl.setVisibility(View.GONE);
+                okBtn.setVisibility(View.GONE);
+                bottomRl.setVisibility(View.VISIBLE);
+                btnReplay.setVisibility(View.GONE);
+            }
+        });
+
+
+        ImageView cancel2= (ImageView) dialog.findViewById(R.id.img_cancel2);
+        cancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                msgTv2.setVisibility(View.GONE);
+                msgTv.setVisibility(View.VISIBLE);
+                del_rl.setVisibility(View.VISIBLE);
+                okBtn.setVisibility(View.VISIBLE);
+                bottomRl.setVisibility(View.GONE);
+                btnReplay.setVisibility(View.VISIBLE);
+            }
+        });
+
+        final LetterRrecive[] lc = new LetterRrecive[1];
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=message&act=openMessage&type=3&id="+letter.getId()+"&web_uid=" +ConstFile.uId;
+                    final String response = example.run(url);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lc[0] =LetterRrecive.objectFromData(response);
+                            TextView tv= (TextView) dialog.findViewById(R.id.name);
+                            tv.setText(lc[0].getName());
+
+                            msgTv.setText(lc[0].getEDesc());
+                            setFriendhead(lc[0],dialog);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
+        ImageView btnOk2= (ImageView) dialog.findViewById(R.id.img_ok2);
+        btnOk2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str=msgTv2.getText().toString().trim();
+                if(str.length()==0){
+                    Toast.makeText(MainActivity.this, "内容不能为空！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean result = false;
+                        Utils.OkHttps example = new Utils.OkHttps();
+                        try {
+                            String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=message&act=sendMessage&type=3&toId="+lc[0].getFromId()+"&web_uid=" +ConstFile.uId;
+                            final String response = example.run(url);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LetterSendResult lsr=LetterSendResult.objectFromData(response);
+                                    if (lsr.getCode()==1){
+                                        msgTv2.setVisibility(View.GONE);
+                                        msgTv.setVisibility(View.VISIBLE);
+                                        del_rl.setVisibility(View.VISIBLE);
+                                        okBtn.setVisibility(View.VISIBLE);
+                                        bottomRl.setVisibility(View.GONE);
+                                        btnReplay.setVisibility(View.VISIBLE);
+                                    }
+                                    Toast.makeText(MainActivity.this, lsr.getMsg(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+            }
+        });
+    }
+
+
+    //朋友
+    private void setFriendhead(final LetterRrecive lc, final AlertDialog dialog){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean result = false;
+                Utils.OkHttps example = new Utils.OkHttps();
+                try {
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=friend&web_uid=" +ConstFile.uId;
+                    String response = example.run(url);
+//                    JSONArray arr=new JSONArray(response);
+                    final List<Friend> dataList= Friend.arrayFriendFromData(response);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int i=0;i<dataList.size();i++){
+                                Friend frd=dataList.get(i);
+                                if ((frd.getUserId()+"").equalsIgnoreCase(lc.getFromId())){
+                                    ImageView imgView= (ImageView) dialog.findViewById(R.id.img_myImg);
+                                    Glide.with(context).load(frd.getHeadPic()).into(imgView);
+                                }
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

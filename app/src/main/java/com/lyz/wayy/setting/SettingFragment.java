@@ -20,11 +20,6 @@ import com.lyz.wayy.pub.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 设置页面
- *
- * @author zengxl 2015-9-22
- */
 public class SettingFragment extends Fragment {
 
     private Context context;// 本类环境
