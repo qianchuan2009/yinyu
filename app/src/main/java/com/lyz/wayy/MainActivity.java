@@ -147,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private ArrayList<Letter> letterDataList=new ArrayList<Letter>();
     private AdapterLetter adapterLetter;
 
+    private   Friend currentFriend;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -375,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 showDuiHuanDlg();
                 break;
             case R.id.frd_msg:
-
+                sendFrdMsg();
                 break;
             case R.id.tab4:
                 //打开宠物购买
@@ -388,6 +390,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 showLetterDlg();
                 break;
         }
+    }
+
+
+    private void sendFrdMsg(){
+        sendFrdLetterDlg();
     }
 
     //公告
@@ -505,6 +512,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     //设置朋友信息
     private void setFrdInfo(FriendInfo friendInfo, Friend frd) {
+        currentFriend=frd;
         if ((frd.getUserId() + "").equalsIgnoreCase(userBean.getUId())) {
             frdArea.setVisibility(View.GONE);
         } else {
@@ -1030,7 +1038,100 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
+    //发送朋友邮件
+    private void sendFrdLetterDlg() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogStyle);
+        final View dlgView = View
+                .inflate(this, R.layout.dlg_letter, null);
+        builder.setView(dlgView);
+        builder.setCancelable(false);
+        //取消或确定按钮监听事件处理
+        final AlertDialog dialog = builder.create();
+        dialog.show();
 
+
+        //设置背景透明
+        WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
+        p.height = Utils.dp2px(260, MainActivity.this);
+        p.width = Utils.dp2px(330, MainActivity.this);
+        dialog.getWindow().setAttributes(p);//设置生效
+
+        final RelativeLayout title1= (RelativeLayout) dialog.findViewById(R.id.top_nav); //111
+        final RelativeLayout body1= (RelativeLayout) dialog.findViewById(R.id.luck_main_body);//111
+        title1.setVisibility(View.GONE);
+        body1.setVisibility(View.GONE);
+
+        final RelativeLayout body2= (RelativeLayout) dialog.findViewById(R.id.msg_main_body);//222
+        body2.setVisibility(View.VISIBLE);
+        final TextView msgTv= (TextView) dialog.findViewById(R.id.edt_showmsg);
+
+        final EditText msgTv2= (EditText) dialog.findViewById(R.id.edt);
+
+        final RelativeLayout bottomRl= (RelativeLayout) dialog.findViewById(R.id.bottom_rl);
+        bottomRl.setVisibility(View.GONE);
+
+        final ImageView okBtn= (ImageView) dialog.findViewById(R.id.img_ok);
+        final RelativeLayout del_rl = (RelativeLayout) dialog.findViewById(R.id.del_rl);
+        final ImageView btnReplay= (ImageView) dialog.findViewById(R.id.replay);
+        msgTv2.setText("");
+        msgTv2.setVisibility(View.VISIBLE);
+        msgTv.setVisibility(View.GONE);
+        del_rl.setVisibility(View.GONE);
+        okBtn.setVisibility(View.GONE);
+        bottomRl.setVisibility(View.VISIBLE);
+        btnReplay.setVisibility(View.GONE);
+        ImageView imgView= (ImageView) dialog.findViewById(R.id.img_myImg);
+        Glide.with(context).load(currentFriend.getHeadPic()).into(imgView);
+        TextView tv= (TextView) dialog.findViewById(R.id.name);
+        tv.setText(currentFriend.getUserName());
+
+        ImageView cancel2= (ImageView) dialog.findViewById(R.id.img_cancel2);
+        cancel2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+
+        ImageView btnOk2= (ImageView) dialog.findViewById(R.id.img_ok2);
+        btnOk2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str=msgTv2.getText().toString().trim();
+                if(str.length()==0){
+                    Toast.makeText(MainActivity.this, "内容不能为空！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean result = false;
+                        Utils.OkHttps example = new Utils.OkHttps();
+                        try {
+                            String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=message&act=sendMessage&type=3&toId="+currentFriend.getUserId()+"&web_uid=" +ConstFile.uId;
+                            final String response = example.run(url);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LetterSendResult lsr=LetterSendResult.objectFromData(response);
+                                    if (lsr.getCode()==1){
+                                        dialog.dismiss();
+                                    }
+                                    Toast.makeText(MainActivity.this, lsr.getMsg(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+            }
+        });
+    }
 
     //////////////////////////////////
 
@@ -1056,8 +1157,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         //设置背景透明
         WindowManager.LayoutParams p = dialog.getWindow().getAttributes();  //获取对话框当前的参数值
-        p.height = Utils.dp2px(280, MainActivity.this);
-        p.width = Utils.dp2px(360, MainActivity.this);
+        p.height = Utils.dp2px(260, MainActivity.this);
+        p.width = Utils.dp2px(330, MainActivity.this);
         dialog.getWindow().setAttributes(p);//设置生效
 
         final GridView gridView = (GridView) dialog.findViewById(R.id.letter_gridview);
