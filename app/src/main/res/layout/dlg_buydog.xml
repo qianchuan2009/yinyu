@@ -8,7 +8,7 @@
         android:id="@+id/buydog_main_body"
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:background="@mipmap/headpic2"
+        android:background="@drawable/letter_bg"
         android:orientation="horizontal"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true">

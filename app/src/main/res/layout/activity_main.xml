@@ -493,6 +493,16 @@
                     android:gravity="center"
                     android:background="@drawable/sitemessage"
                     />
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/tab6"
+                    android:text=""
+                    android:layout_width="40dp"
+                    android:layout_height="32dp"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:background="@drawable/clothes"
+                    />
             </LinearLayout>
             <FrameLayout
                 android:layout_below="@id/radio_group"

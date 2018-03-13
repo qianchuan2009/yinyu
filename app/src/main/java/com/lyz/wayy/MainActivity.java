@@ -42,6 +42,7 @@ import com.lyz.wayy.bean.LetterSendResult;
 import com.lyz.wayy.bean.PkgInfo;
 import com.lyz.wayy.bean.UpdateBean;
 import com.lyz.wayy.bean.UserInfo;
+import com.lyz.wayy.clothes.BuyClothesActicity;
 import com.lyz.wayy.lucky.AdapterLucky;
 import com.lyz.wayy.lucky.LuckyBean;
 import com.lyz.wayy.lucky.LuckyUtil;
@@ -238,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     //设置用户信息
     private void inituserInfo() {
         userBean = UserInfo.UserBean.objectFromData(userJsonStr, "user");
+        change1();
         userName.setText(userBean.getUserName());
         Boolean isVip = userBean.getYellowstatus() == 1;
         if (isVip) {
@@ -289,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     //设置qq形象
@@ -367,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
 
-    @OnClick({R.id.btnchoujiang, R.id.duihua,R.id.frd_msg,R.id.tab3,R.id.tab4,R.id.tab5})
+    @OnClick({R.id.btnchoujiang, R.id.duihua,R.id.frd_msg,R.id.tab3,R.id.tab4,R.id.tab5,R.id.tab6})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnchoujiang:
@@ -388,6 +391,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
             case R.id.tab5:
                 showLetterDlg();
+                break;
+            case R.id.tab6:
+                //打开宠物购买
+                Intent intent2 = new Intent(MainActivity.this, BuyClothesActicity.class);
+                intent2.putExtra("star", userBean.getMoney());
+                intent2.putExtra("fb", userBean.getFB());
+                startActivity(intent2);
                 break;
         }
     }
@@ -580,6 +590,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     change2();
                     break;
                 case R.id.tab3:
+//                    fragmentFrd
                     //显示当前的人物状态
                     break;
                 default:
@@ -598,6 +609,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         FragmentFriend fragmentFrd = new FragmentFriend();
         fragmentFrd.setContext(this);
         fragmentFrd.setHandle(handler);
+        fragmentFrd.setCurrentUserId(userBean.getUId());
         ft.replace(R.id.frame, fragmentFrd);
         ft.commit();
     }
@@ -628,7 +640,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         moveImg = (ImageView) findViewById(R.id.move_img);
 
         moveImg.setOnTouchListener(this);
-        change1();
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

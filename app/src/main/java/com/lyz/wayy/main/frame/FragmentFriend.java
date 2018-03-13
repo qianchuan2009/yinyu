@@ -36,7 +36,18 @@ public class FragmentFriend extends Fragment {
     private AdapterFriend adapterFriend; //recyclerView的适配器
     private RecyclerView recyclerView; //显示图片的布局
     private Handler handler;//传过来的handler
+    String  currentUserId;//当前登录用户的id
     List<Friend> dataList=new ArrayList<>();
+
+    public void setCurrentUserId(String  _currentUserId){
+        currentUserId=_currentUserId;
+    }
+
+
+    public void clickCurrentUser(){
+
+    }
+
     public void setHandle(Handler handle){
         this.handler=handle;
     }
@@ -56,6 +67,8 @@ public class FragmentFriend extends Fragment {
             LinearLayoutManager ms= new LinearLayoutManager(context);
             ms.setOrientation(LinearLayoutManager.HORIZONTAL);
             recyclerView.setLayoutManager(ms);
+
+
         getFriend();
         adapterFriend=new AdapterFriend(dataList,context);
         adapterFriend.setOnMyItemClickListener(new AdapterFriend.OnMyItemClickListener() {
@@ -87,6 +100,12 @@ public class FragmentFriend extends Fragment {
                     String response = example.run(url);
 //                    JSONArray arr=new JSONArray(response);
                     dataList= Friend.arrayFriendFromData(response);
+                    for (int i=0;i<dataList.size();i++){
+                        Friend frd=dataList.get(i);
+                        if (currentUserId.equalsIgnoreCase(frd.getUserId()+"")){
+                            frd.setSelected(true);
+                        }
+                    }
                     Comparator<Friend> com=new FriendComparator(false);
                     Collections.sort(dataList, com);
                     getActivity().runOnUiThread(new Runnable() {

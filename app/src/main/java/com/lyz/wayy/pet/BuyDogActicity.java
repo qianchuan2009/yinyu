@@ -11,21 +11,22 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lyz.wayy.pub.ConstFile;
 import com.lyz.wayy.R;
-import com.lyz.wayy.pub.Utils;
 import com.lyz.wayy.bean.BuyDog;
 import com.lyz.wayy.bean.PkgInfo;
+import com.lyz.wayy.horizontalpage.view.HorizontalPageLayoutManager;
+import com.lyz.wayy.horizontalpage.view.PagingScrollHelper;
 import com.lyz.wayy.main.frame.FragmentPkg;
+import com.lyz.wayy.pub.ConstFile;
+import com.lyz.wayy.pub.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,9 +41,9 @@ import butterknife.OnClick;
  * Created by helch on 2018/2/23.
  */
 
-public class BuyDogActicity extends AppCompatActivity {
+public class BuyDogActicity extends AppCompatActivity implements PagingScrollHelper.onPageChangeListener {
     @BindView(R.id.buydog_gridView)
-    GridView buydogGridView;
+    RecyclerView recyclerView;
     @BindView(R.id.tab2)
     RadioButton radioButton2;
     @BindView(R.id.radio_group)
@@ -57,16 +58,30 @@ public class BuyDogActicity extends AppCompatActivity {
     TextView mystar;
     @BindView(R.id.fb)
     TextView fbView;
+    @BindView(R.id.left_btn)
+    ImageView leftBtn;
+    @BindView(R.id.right_btn)
+    ImageView rightBtn;
+    @BindView(R.id.buydog_main_body)
+    RelativeLayout buydogMainBody;
+    @BindView(R.id.bottom)
+    RelativeLayout bottom;
     private FragmentManager fragmentManager = getSupportFragmentManager();
 
 
-    private AdapterBuyDog adapterBuyDog; //recyclerView的适配器
-    private RecyclerView recyclerView; //显示图片的布局
+    //    private AdapterBuyDog adapterBuyDog; //recyclerView的适配器
 //    private Handler handler;//传过来的handler
-    ArrayList<BuyDog> dataList=new ArrayList<>();
+    ArrayList<BuyDog> dataList = new ArrayList<>();
 
     int fb;//fb
     int star;//
+
+    PagingScrollHelper scrollHelper = new PagingScrollHelper();
+
+    private AdapterBuyDog adapterBuyDog = null;
+
+    int currentPage;
+    int totalPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,48 +90,81 @@ public class BuyDogActicity extends AppCompatActivity {
         ButterKnife.bind(this);
 //        radioGroup.setOnCheckedChangeListener(checkedchangelistner);
         Intent intent = getIntent();
-        String fbStr=intent.getStringExtra("fb");
-        fb=Integer.parseInt(fbStr);
-        star=intent.getIntExtra("star",0);
-        mystar.setText(star+"");
-        fbView.setText(fb+"");
+        String fbStr = intent.getStringExtra("fb");
+        fb = Integer.parseInt(fbStr);
+        star = intent.getIntExtra("star", 0);
+        mystar.setText(star + "");
+        fbView.setText(fb + "");
 
         change2();
+
         initDogShop();
+        scrollHelper.setUpRecycleView(recyclerView);
+        scrollHelper.setOnPageChangeListener(this);
+//        switchLayout(R.id.rb_horizontal_page);
+        recyclerView.setHorizontalScrollBarEnabled(true);
+        init();
     }
 
+    private RecyclerView.ItemDecoration lastItemDecoration = null;
+    private HorizontalPageLayoutManager horizontalPageLayoutManager = null;
+//    private PagingItemDecoration pagingItemDecoration = null;
 
-    private void initDogShop(){
+    private void init() {
+        horizontalPageLayoutManager = new HorizontalPageLayoutManager(2, 3);
+//        pagingItemDecoration = new PagingItemDecoration(this, horizontalPageLayoutManager);
+        if (horizontalPageLayoutManager != null) {
+            recyclerView.setLayoutManager(horizontalPageLayoutManager);
+            recyclerView.removeItemDecoration(lastItemDecoration);
+//            recyclerView.addItemDecoration(pagingItemDecoration);
+            scrollHelper.updateLayoutManger();
+            scrollHelper.scrollToPosition(0);
+//            lastItemDecoration = pagingItemDecoration;
+        }
+
+    }
+
+    private void initDogShop() {
 
         getDogList();
-        adapterBuyDog=new AdapterBuyDog(this,dataList);
-        buydogGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adapterBuyDog = new AdapterBuyDog(this, dataList);
+//
+//        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                BuyDog buyDog=dataList.get(i);
+//                showBuyDogDlg(buyDog);
+//            }
+//        });
+        recyclerView.setAdapter(adapterBuyDog);
+        adapterBuyDog.setOnMyItemClickListener(new AdapterBuyDog.OnMyItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                BuyDog buyDog=dataList.get(i);
-                showBuyDogDlg(buyDog);
+            public void myClick(BuyDog boyDog, int pos) {
+//                BuyDog buyDog=dataList.get(i);
+                showBuyDogDlg(boyDog);
             }
         });
-        buydogGridView.setAdapter(adapterBuyDog);
+
     }
 
 
-    private void getDogList(){
+    private void getDogList() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=getShopInfo&type=3,4&web_uid=" +ConstFile.uId;
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=getShopInfo&type=3,4&web_uid=" + ConstFile.uId;
                     String response = example.run(url);
 //                    JSONArray arr=new JSONArray(response);
-                    dataList= BuyDog.arrayBuyDogFromData(response,"4");
+                    dataList = BuyDog.arrayBuyDogFromData(response, "4");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             adapterBuyDog.reSetDatalist(dataList);
-                            adapterBuyDog.notifyDataSetChanged();
+//                             myAdapter.notifyDataSetChanged();
+                            updateData();
                         }
                     });
                 } catch (Exception e) {
@@ -124,6 +172,26 @@ public class BuyDogActicity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    private void updateData() {
+        adapterBuyDog.notifyDataSetChanged();
+        //滚动到第一页
+        scrollHelper.scrollToPosition(0);
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                totalPage=scrollHelper.getPageCount();
+                currentPage=0;
+                leftBtn.setVisibility(View.GONE);
+                if (totalPage>0){
+                    rightBtn.setVisibility(View.VISIBLE);
+                }else{
+                    rightBtn.setVisibility(View.GONE);
+                }
+//                tv_page_total.setText("共" + scrollHelper.getPageCount() + "页");
+            }
+        });
     }
 
 
@@ -172,8 +240,8 @@ public class BuyDogActicity extends AppCompatActivity {
     }
 
     /////////
-    private void showBuyDogDlg(final BuyDog buyDog){
-        AlertDialog.Builder builder = new AlertDialog.Builder(BuyDogActicity.this,R.style.AlertDialogStyle);
+    private void showBuyDogDlg(final BuyDog buyDog) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(BuyDogActicity.this, R.style.AlertDialogStyle);
         final View dlgView = View
                 .inflate(this, R.layout.dlg_buydog, null);
         builder.setView(dlgView);
@@ -182,28 +250,28 @@ public class BuyDogActicity extends AppCompatActivity {
         final AlertDialog dialog = builder.create();
         dialog.show();
 
-        ImageView  touxiang=dlgView.findViewById(R.id.bugdog_touxiang);
-        String tid=buyDog.getTId();
+        ImageView touxiang = dlgView.findViewById(R.id.bugdog_touxiang);
+        String tid = buyDog.getTId();
 //        int id = getResources().getIdentifier("animal"+tid+"_04_0001", "drawable", BuyDogActicity.this.getPackageName());
 //        touxiang.setImageResource(id);
 
-        int id = BuyDogActicity.this.getResources().getIdentifier("animal"+tid+"_04", "drawable", getPackageName());
+        int id = BuyDogActicity.this.getResources().getIdentifier("animal" + tid + "_04", "drawable", getPackageName());
 //            Drawable drawable = getResources().getDrawable(id);
         touxiang.setImageResource(id);
         final AnimationDrawable animationDrawable = (AnimationDrawable) touxiang.getDrawable();
         animationDrawable.start();
 
-        TextView title=dlgView.findViewById(R.id.title);
+        TextView title = dlgView.findViewById(R.id.title);
         title.setText(buyDog.getTName());
 
-        TextView desc=dlgView.findViewById(R.id.desc);
+        TextView desc = dlgView.findViewById(R.id.desc);
         desc.setText(buyDog.getDepict());
 
-        TextView price=dlgView.findViewById(R.id.price);
-        String priceStr=buyDog.getList().get_$1().getFBPrice()+"";
+        TextView price = dlgView.findViewById(R.id.price);
+        String priceStr = buyDog.getList().get_$1().getFBPrice() + "";
         price.setText(priceStr);
 
-        TextView price2=dlgView.findViewById(R.id.price2);
+        TextView price2 = dlgView.findViewById(R.id.price2);
         price2.setText(priceStr);
 
         //设置背景透明
@@ -213,7 +281,7 @@ public class BuyDogActicity extends AppCompatActivity {
 //        p.width = Utils.dp2px(260,MainActivity.this);
 //        dialog.getWindow().setAttributes(p);//设置生效
 
-        ImageView closeBtn= (ImageView) dialog.findViewById(R.id.buydog_cancel);
+        ImageView closeBtn = (ImageView) dialog.findViewById(R.id.buydog_cancel);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -222,7 +290,7 @@ public class BuyDogActicity extends AppCompatActivity {
             }
         });
 
-        ImageView okBtn= (ImageView) dialog.findViewById(R.id.buydog_ok);
+        ImageView okBtn = (ImageView) dialog.findViewById(R.id.buydog_ok);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -234,31 +302,31 @@ public class BuyDogActicity extends AppCompatActivity {
 
     }
 
-    private  void buyDogFunc(final BuyDog buyDog){
+    private void buyDogFunc(final BuyDog buyDog) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=buy&type=4&id="+buyDog.getTId()+"&web_uid=" +ConstFile.uId;
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=buy&type=4&id=" + buyDog.getTId() + "&web_uid=" + ConstFile.uId;
                     final String response = example.run(url);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (response.trim().length()==0){
+                            if (response.trim().length() == 0) {
                                 Toast.makeText(BuyDogActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
-                            }else{
-                                JSONObject jsonObject= null;
+                            } else {
+                                JSONObject jsonObject = null;
                                 try {
                                     jsonObject = new JSONObject(response);
-                                    if (jsonObject.getInt("code")==1){
+                                    if (jsonObject.getInt("code") == 1) {
                                         Toast.makeText(BuyDogActicity.this, jsonObject.getString("direction"), Toast.LENGTH_SHORT).show();
                                         change2();
-                                        int fbs= Integer.parseInt(fbView.getText()+"");
-                                        fbs+=jsonObject.getInt("FB");
-                                        fbView.setText(fb+"");
-                                    }else{
+                                        int fbs = Integer.parseInt(fbView.getText() + "");
+                                        fbs += jsonObject.getInt("FB");
+                                        fbView.setText(fb + "");
+                                    } else {
                                         Toast.makeText(BuyDogActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
                                     }
                                 } catch (JSONException e) {
@@ -276,5 +344,49 @@ public class BuyDogActicity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void onPageChange(int index) {
+        currentPage=index;
+        if (currentPage==0){
+            leftBtn.setVisibility(View.GONE);
+        }
+        if (totalPage>1){
+            rightBtn.setVisibility(View.VISIBLE);
+        }
+        if (currentPage==totalPage-1){
+            rightBtn.setVisibility(View.GONE);
+        }
+        if(currentPage>0){
+            leftBtn.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @OnClick({R.id.left_btn, R.id.right_btn})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.left_btn:
+                currentPage--;
+                scrollHelper.scrollToPosition(currentPage);
+                if (currentPage==0){
+                    leftBtn.setVisibility(View.GONE);
+                }
+                if (totalPage>1){
+                    rightBtn.setVisibility(View.VISIBLE);
+                }
+
+                break;
+            case R.id.right_btn:
+                currentPage++;
+                scrollHelper.scrollToPosition(currentPage);
+                if (currentPage==totalPage-1){
+                    rightBtn.setVisibility(View.GONE);
+                }
+                if(currentPage>0){
+                    leftBtn.setVisibility(View.VISIBLE);
+                }
+                break;
+        }
     }
 }
