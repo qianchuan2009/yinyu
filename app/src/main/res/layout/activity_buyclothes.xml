@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/buydog_main_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff0d9"
+        android:paddingBottom="82dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+        <LinearLayout
+            android:id="@+id/buydog_eb"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/goldstar" />
+
+                <com.lyz.wayy.pub.TextViewWithFont
+                    android:id="@+id/mystar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="1999"
+                    android:textSize="16sp"
+                    android:textColor="#3469a0"
+                    android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/eb" />
+
+                <com.lyz.wayy.pub.TextViewWithFont
+                    android:id="@+id/fb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="1999"
+                    android:textSize="16sp"
+                    android:textColor="#3469a0"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@id/buydog_eb"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp">
+            <RadioGroup
+                android:id="@+id/radio_group2"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="0dp"
+                android:weightSum="1">
+
+                <RadioButton
+                    android:id="@+id/shangyi"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:checked="true"
+                    android:background="@drawable/radio_button_select"
+                    android:text="上衣" />
+
+                <RadioButton
+                    android:id="@+id/kuqun"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_button_select"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="裤裙" />
+
+                <RadioButton
+                    android:id="@+id/nianxin"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_button_select"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="脸型" />
+
+                <RadioButton
+                    android:id="@+id/faxin"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_button_select"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="发型" />
+
+                <RadioButton
+                    android:id="@+id/maoz"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_button_select"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="帽子" />
+
+                <RadioButton
+                    android:id="@+id/shiping"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_button_select"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="饰品" />
+
+                <RadioButton
+                    android:id="@+id/zhuangshi"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_button_select"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="装饰" />
+
+                <RadioButton
+                    android:id="@+id/zhuangshi2"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_button_select"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="装饰2" />
+
+                <RadioButton
+                    android:id="@+id/chibang"
+                    android:layout_width="50dp"
+                    android:layout_height="24dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_button_select"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="翅膀" />
+
+            </RadioGroup>
+
+
+        </LinearLayout>
+        <RelativeLayout
+    android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="65dp"
+    android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/buydog_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/buy_back" />
+        <ImageView
+            android:id="@+id/left_btn"
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@id/buydog_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/left3" />
+        <android.support.v7.widget.RecyclerView
+            android:layout_toRightOf="@id/buydog_back"
+            android:id="@+id/buydog_gridView"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="40dp"
+            android:numColumns="3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/right_btn"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/right3" />
+    </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:background="#00000000"
+        android:layout_height="120dp">
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#00000000"
+            android:layout_marginBottom="-5dp"
+            android:weightSum="1">
+            <RadioButton
+                android:layout_marginLeft="10dp"
+                android:id="@+id/tab2"
+                android:text=""
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:button="@null"
+                android:background="@drawable/i_tool"
+                android:gravity="center" />
+        </RadioGroup>
+        <FrameLayout
+            android:layout_below="@id/radio_group"
+            android:id="@+id/frame"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+        </FrameLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

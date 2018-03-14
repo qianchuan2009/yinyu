@@ -5,20 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lyz.wayy.R;
 import com.lyz.wayy.bean.BuyDog;
-import com.lyz.wayy.bean.PkgInfo;
-import com.lyz.wayy.lucky.LuckyBean;
-import com.lyz.wayy.main.MainFragment;
-import com.lyz.wayy.main.adapter.AdapterPkg;
-import com.lyz.wayy.msg.MsgListViewAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by helch on 2018/2/15.

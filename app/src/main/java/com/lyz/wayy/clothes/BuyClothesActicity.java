@@ -1,7 +1,11 @@
-package com.lyz.wayy.pet;
+package com.lyz.wayy.clothes;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lyz.wayy.R;
-import com.lyz.wayy.bean.BuyDog;
+import com.lyz.wayy.bean.ClothesInfoBean;
 import com.lyz.wayy.bean.PkgInfo;
 import com.lyz.wayy.horizontalpage.view.HorizontalPageLayoutManager;
 import com.lyz.wayy.horizontalpage.view.PagingScrollHelper;
@@ -31,17 +35,20 @@ import com.lyz.wayy.pub.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * Created by helch on 2018/2/23.
  */
 
-public class BuyDogActicity extends AppCompatActivity implements PagingScrollHelper.onPageChangeListener {
+public class BuyClothesActicity extends AppCompatActivity implements PagingScrollHelper.onPageChangeListener {
     @BindView(R.id.buydog_gridView)
     RecyclerView recyclerView;
     @BindView(R.id.tab2)
@@ -66,27 +73,33 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
     RelativeLayout buydogMainBody;
     @BindView(R.id.bottom)
     RelativeLayout bottom;
+    @BindView(R.id.radio_group2)
+    RadioGroup radioGroup2;
     private FragmentManager fragmentManager = getSupportFragmentManager();
 
 
-    //    private AdapterBuyDog adapterBuyDog; //recyclerView的适配器
+    //    private adapter adapter; //recyclerView的适配器
 //    private Handler handler;//传过来的handler
-    ArrayList<BuyDog> dataList = new ArrayList<>();
+    ArrayList<ClothesInfoBean> dataList = new ArrayList<>();
 
     int fb;//fb
     int star;//
 
     PagingScrollHelper scrollHelper = new PagingScrollHelper();
 
-    private AdapterBuyDog adapterBuyDog = null;
+    private AdapterBuyClothes adapter = null;
 
     int currentPage;
     int totalPage;
+    String userJsonStr;//当前用户信息
+
+
+    ArrayList<ClothesInfoBean> selectDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buydog);
+        setContentView(R.layout.activity_buyclothes);
         ButterKnife.bind(this);
 //        radioGroup.setOnCheckedChangeListener(checkedchangelistner);
         Intent intent = getIntent();
@@ -95,6 +108,7 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
         star = intent.getIntExtra("star", 0);
         mystar.setText(star + "");
         fbView.setText(fb + "");
+        userJsonStr=intent.getStringExtra("userJsonStr");
 
         change2();
 
@@ -111,7 +125,7 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
 //    private PagingItemDecoration pagingItemDecoration = null;
 
     private void init() {
-        horizontalPageLayoutManager = new HorizontalPageLayoutManager(2, 3);
+        horizontalPageLayoutManager = new HorizontalPageLayoutManager(1, 6);
 //        pagingItemDecoration = new PagingItemDecoration(this, horizontalPageLayoutManager);
         if (horizontalPageLayoutManager != null) {
             recyclerView.setLayoutManager(horizontalPageLayoutManager);
@@ -122,12 +136,15 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
 //            lastItemDecoration = pagingItemDecoration;
         }
 
+//        radioGroup.bringToFront();
+        radioGroup2.setOnCheckedChangeListener(checkedchangelistner);
+
     }
 
     private void initDogShop() {
 
         getDogList();
-        adapterBuyDog = new AdapterBuyDog(this, dataList);
+        adapter = new AdapterBuyClothes(this, selectDataList);
 //
 //        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -136,11 +153,10 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
 //                showBuyDogDlg(buyDog);
 //            }
 //        });
-        recyclerView.setAdapter(adapterBuyDog);
-        adapterBuyDog.setOnMyItemClickListener(new AdapterBuyDog.OnMyItemClickListener() {
+        recyclerView.setAdapter(adapter);
+        adapter.setOnMyItemClickListener(new AdapterBuyClothes.OnMyItemClickListener() {
             @Override
-            public void myClick(BuyDog boyDog, int pos) {
-//                BuyDog buyDog=dataList.get(i);
+            public void myClick(ClothesInfoBean boyDog, int pos) {
                 showBuyDogDlg(boyDog);
             }
         });
@@ -155,15 +171,15 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=getShopInfo&type=3,4&web_uid=" + ConstFile.uId;
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=getClothesInfo&type=clothes&web_uid=" + ConstFile.uId;
                     String response = example.run(url);
 //                    JSONArray arr=new JSONArray(response);
-                    dataList = BuyDog.arrayBuyDogFromData(response, "4");
+                    dataList = ClothesInfoBean.arrayClothesInfoBeanFromData(response);
+                    setSelectDataList("10");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            adapterBuyDog.reSetDatalist(dataList);
-//                             myAdapter.notifyDataSetChanged();
+                            adapter.reSetDatalist(selectDataList);
                             updateData();
                         }
                     });
@@ -174,19 +190,29 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
         }).start();
     }
 
+    //做一下分类
+    private void setSelectDataList(String sort) {
+        selectDataList.clear();
+        for (ClothesInfoBean pp : dataList) {
+            if (pp.getSort().equalsIgnoreCase(sort)) {
+                selectDataList.add(pp);
+            }
+        }
+    }
+
     private void updateData() {
-        adapterBuyDog.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         //滚动到第一页
         scrollHelper.scrollToPosition(0);
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
-                totalPage=scrollHelper.getPageCount();
-                currentPage=0;
+                totalPage = scrollHelper.getPageCount();
+                currentPage = 0;
                 leftBtn.setVisibility(View.GONE);
-                if (totalPage>0){
+                if (totalPage > 0) {
                     rightBtn.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     rightBtn.setVisibility(View.GONE);
                 }
 //                tv_page_total.setText("共" + scrollHelper.getPageCount() + "页");
@@ -228,11 +254,49 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
                 case R.id.tab2:
                     change2();
                     break;
+                case R.id.shangyi:
+                    setChg("10",checkedId);
+//                    updateData();
+                    break;
+                case R.id.kuqun:
+                    setChg("8",checkedId);
+                    break;
+                case R.id.nianxin:
+                    setChg("14",checkedId);
+                    break;
+                case R.id.faxin:
+                    setChg("19",checkedId);
+                    break;
+                case R.id.maoz:
+                    setChg("20",checkedId);
+                    break;
+                case R.id.shiping:
+                    setChg("17",checkedId);
+                    break;
+                case R.id.zhuangshi:
+                    setChg("23",checkedId);
+                    break;
+                case R.id.zhuangshi2:
+                    setChg("24",checkedId);
+                    break;
+                case R.id.chibang:
+                    setChg("3",checkedId);
+                    break;
                 default:
                     break;
             }
         }
     };
+
+    private void setChg(String type,int btnId){
+//        int id = getResources().getIdentifier("animal" + DogId + "_0" + step, "drawable", getPackageName());
+
+        setSelectDataList(type);
+        adapter.reSetDatalist(selectDataList);
+        adapter.notifyDataSetChanged();
+//        scrollHelper.scrollToPosition(0);
+        updateData();
+    }
 
     @OnClick(R.id.buydog_back)
     public void onViewClicked() {
@@ -240,10 +304,10 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
     }
 
     /////////
-    private void showBuyDogDlg(final BuyDog buyDog) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(BuyDogActicity.this, R.style.AlertDialogStyle);
+    private void showBuyDogDlg(final ClothesInfoBean clothes) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(BuyClothesActicity.this, R.style.AlertDialogStyle);
         final View dlgView = View
-                .inflate(this, R.layout.dlg_buydog, null);
+                .inflate(this, R.layout.dlg_buyclothes, null);
         builder.setView(dlgView);
         builder.setCancelable(false);
         //取消或确定按钮监听事件处理
@@ -251,28 +315,28 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
         dialog.show();
 
         ImageView touxiang = dlgView.findViewById(R.id.bugdog_touxiang);
-        String tid = buyDog.getTId();
-//        int id = getResources().getIdentifier("animal"+tid+"_04_0001", "drawable", BuyDogActicity.this.getPackageName());
-//        touxiang.setImageResource(id);
 
-        int id = BuyDogActicity.this.getResources().getIdentifier("animal" + tid + "_04", "drawable", getPackageName());
-//            Drawable drawable = getResources().getDrawable(id);
-        touxiang.setImageResource(id);
-        final AnimationDrawable animationDrawable = (AnimationDrawable) touxiang.getDrawable();
-        animationDrawable.start();
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(userJsonStr);
+            String vImgStr = jsonObj.getString("virtualimage");
+            String[] vImgArr = Utils.getQQShowData(vImgStr);
+            loadQQshowImg(vImgArr, touxiang,clothes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        TextView title = dlgView.findViewById(R.id.title);
-        title.setText(buyDog.getTName());
 
-        TextView desc = dlgView.findViewById(R.id.desc);
-        desc.setText(buyDog.getDepict());
+//        TextView title = dlgView.findViewById(R.id.youxiaoqi);
+//        title.setText(clothes.getStock());
+
+        TextView desc = dlgView.findViewById(R.id.naijiudu);
+        desc.setText(clothes.getEndurance());
 
         TextView price = dlgView.findViewById(R.id.price);
-        String priceStr = buyDog.getList().get_$1().getFBPrice() + "";
+        String priceStr = clothes.getCost();
         price.setText(priceStr);
 
-        TextView price2 = dlgView.findViewById(R.id.price2);
-        price2.setText(priceStr);
 
         //设置背景透明
 //        WindowManager m = getWindowManager();
@@ -286,7 +350,6 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                animationDrawable.stop();
             }
         });
 
@@ -294,43 +357,94 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buyDogFunc(buyDog);
-                animationDrawable.stop();
+                buyDogFunc(clothes);
                 dialog.dismiss();
             }
         });
 
     }
 
-    private void buyDogFunc(final BuyDog buyDog) {
+    //设置qq形象
+    private void loadQQshowImg(final String[] arr, final ImageView image, final ClothesInfoBean clothes) throws IOException {
+        final ArrayList<Drawable> drawableArr = new ArrayList<Drawable>();
+//        Drawable[] array = new Drawable[26];
+        final int sort=Integer.parseInt(clothes.getSort());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < arr.length; i++) {
+                    if (!arr[i].equalsIgnoreCase("0")||(sort==i)) {
+                        Utils.OkHttps example = new Utils.OkHttps();
+//                 Drawable bitmap1 = Utils.getImageFromAsserts(this,"virtualimage/"+i+"/"+arr[i]+".gif");
+                        String url = ConstFile.serverUrl + "images/virtualimage/" + i + "/" + arr[i] + ".gif";
+                        if(sort==i){
+                            url = ConstFile.serverUrl + "images/virtualimage/" + i + "/" + clothes.getGraphic();
+                        }
+
+                        ResponseBody response = null;
+                        try {
+                            response = example.run2(url);
+                            byte[] bytes = response.bytes();
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            Drawable drawable = new BitmapDrawable(bitmap);
+                            drawableArr.add(drawable);
+                            GifDrawable gifFromBytes = new GifDrawable(bytes);
+                            drawableArr.add(gifFromBytes);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //
+//        Bitmap bitmap2 = ((BitmapDrawable) getResources().getDrawable(
+//                R.drawable.go)).getBitmap();
+                        Drawable[] array = drawableArr.toArray(new Drawable[drawableArr.size()]);
+                        LayerDrawable la = new LayerDrawable(array);
+//        // 其中第一个参数为层的索引号，后面的四个参数分别为left、top、right和bottom
+                        la.setLayerInset(0, 0, 0, 0, 0);
+////        la.setLayerInset(1, 20, 20, 20, 20);
+                        image.setImageDrawable(la);
+                    }
+                });
+            }
+        }).start();
+
+    }
+
+    private void buyDogFunc(final ClothesInfoBean clothes) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean result = false;
                 Utils.OkHttps example = new Utils.OkHttps();
                 try {
-                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=buy&type=4&id=" + buyDog.getTId() + "&web_uid=" + ConstFile.uId;
+                    String url = ConstFile.serverUrl + "myfarm/5ieng.php?mod=shop&act=buyClothes&type=buy&suitable="+clothes.getSuitable()+"&leibie="+clothes.getSort()+"&classid="+clothes.getSort()+"&picid=" + clothes.getPicid() + "&web_uid=" + ConstFile.uId;
                     final String response = example.run(url);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (response.trim().length() == 0) {
-                                Toast.makeText(BuyDogActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(BuyClothesActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
                             } else {
                                 JSONObject jsonObject = null;
                                 try {
                                     jsonObject = new JSONObject(response);
                                     if (jsonObject.getInt("code") == 1) {
-                                        Toast.makeText(BuyDogActicity.this, jsonObject.getString("direction"), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BuyClothesActicity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                                         change2();
                                         int fbs = Integer.parseInt(fbView.getText() + "");
-                                        fbs += jsonObject.getInt("FB");
+                                        fbs -= Integer.parseInt(clothes.getCost());
                                         fbView.setText(fbs + "");
                                     } else {
-                                        Toast.makeText(BuyDogActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(BuyClothesActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    Toast.makeText(BuyClothesActicity.this, "购买失败", Toast.LENGTH_SHORT).show();
                                 }
 
 
@@ -348,17 +462,17 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
 
     @Override
     public void onPageChange(int index) {
-        currentPage=index;
-        if (currentPage==0){
+        currentPage = index;
+        if (currentPage == 0) {
             leftBtn.setVisibility(View.GONE);
         }
-        if (totalPage>1){
+        if (totalPage > 1) {
             rightBtn.setVisibility(View.VISIBLE);
         }
-        if (currentPage==totalPage-1){
+        if (currentPage == totalPage - 1) {
             rightBtn.setVisibility(View.GONE);
         }
-        if(currentPage>0){
+        if (currentPage > 0) {
             leftBtn.setVisibility(View.VISIBLE);
         }
     }
@@ -369,10 +483,10 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
             case R.id.left_btn:
                 currentPage--;
                 scrollHelper.scrollToPosition(currentPage);
-                if (currentPage==0){
+                if (currentPage == 0) {
                     leftBtn.setVisibility(View.GONE);
                 }
-                if (totalPage>1){
+                if (totalPage > 1) {
                     rightBtn.setVisibility(View.VISIBLE);
                 }
 
@@ -380,10 +494,10 @@ public class BuyDogActicity extends AppCompatActivity implements PagingScrollHel
             case R.id.right_btn:
                 currentPage++;
                 scrollHelper.scrollToPosition(currentPage);
-                if (currentPage==totalPage-1){
+                if (currentPage == totalPage - 1) {
                     rightBtn.setVisibility(View.GONE);
                 }
-                if(currentPage>0){
+                if (currentPage > 0) {
                     leftBtn.setVisibility(View.VISIBLE);
                 }
                 break;

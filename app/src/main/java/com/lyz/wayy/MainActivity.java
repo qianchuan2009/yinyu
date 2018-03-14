@@ -397,6 +397,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 Intent intent2 = new Intent(MainActivity.this, BuyClothesActicity.class);
                 intent2.putExtra("star", userBean.getMoney());
                 intent2.putExtra("fb", userBean.getFB());
+                intent2.putExtra("userJsonStr", userJsonStr);
                 startActivity(intent2);
                 break;
         }
